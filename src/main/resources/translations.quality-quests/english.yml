@@ -1,0 +1,5 @@
+no_permission: "§cYou're not allowed to do that"
+default_error: "§cSomething went wrong"
+missing_argument: "§eWrong arguments was used."
+configuration_reload_failure: "§cSomething went wrong during config reload"
+configuration_reload_success: "§eConfig successfully reloaded"

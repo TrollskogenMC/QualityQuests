@@ -1,0 +1,5 @@
+no_permission: "§cDu får inte göra detta"
+default_error: "§cNågot gick fel"
+missing_argument: "§eFel parametrar användes.]"
+configuration_reload_failure: "§cNågot gick fel vid inladdning av konfigurationen"
+configuration_reload_success: "§eKonfigurationen är omladdad"
