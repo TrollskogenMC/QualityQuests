@@ -1,4 +1,4 @@
 package com.github.philipkoivunen.quality_quests.objects;
 
-public class QuestHolder {
+public class Quest {
 }

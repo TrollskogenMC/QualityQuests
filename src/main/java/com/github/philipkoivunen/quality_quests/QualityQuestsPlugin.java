@@ -44,6 +44,11 @@ public class QualityQuestsPlugin extends JavaPlugin {
         cb.addMigration(new Migration(1, () -> {
             Patch<ConfigConstants> patch = new Patch<>();
             patch.set(ConfigConstants.LANGUAGE, "language", "english", Type.STRING);
+            patch.set(ConfigConstants.HARD_MOB_MIN, "hard_mob_min", 3, Type.INTEGER);
+            patch.set(ConfigConstants.EASY_MOB_MIN, "easy_mob_min", 10, Type.INTEGER);
+            patch.set(ConfigConstants.BOSS_MIN, "boss_min", 1, Type.INTEGER);
+            patch.set(ConfigConstants.EASY_BLOCK_MIN, "easy_block_min", 128, Type.INTEGER);
+            patch.set(ConfigConstants.HARD_BLOCK_MIN, "hard_block_min", 10, Type.INTEGER);
             return patch;
         }));
         configuration = cb.create();
