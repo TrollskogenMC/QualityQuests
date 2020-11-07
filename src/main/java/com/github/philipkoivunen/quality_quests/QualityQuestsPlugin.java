@@ -1,6 +1,7 @@
 package com.github.philipkoivunen.quality_quests;
 
 import com.comphenix.protocol.ProtocolManager;
+import com.github.hornta.commando.CarbonArgument;
 import com.github.hornta.commando.CarbonCommand;
 import com.github.hornta.commando.Commando;
 import com.github.hornta.messenger.MessageManager;
@@ -8,7 +9,11 @@ import com.github.hornta.messenger.MessagesBuilder;
 import com.github.hornta.messenger.Translation;
 import com.github.hornta.messenger.Translations;
 import com.github.hornta.versioned_config.*;
+import com.github.philipkoivunen.quality_quests.apis.StorageApi;
+import com.github.philipkoivunen.quality_quests.apis.fileApi.FileApi;
+import com.github.philipkoivunen.quality_quests.commandHandlers.CreateQuest;
 import com.github.philipkoivunen.quality_quests.commandHandlers.QquestReload;
+import com.github.philipkoivunen.quality_quests.commandHandlers.QuestHandler;
 import com.github.philipkoivunen.quality_quests.constants.ConfigConstants;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import org.bukkit.command.Command;
@@ -24,6 +29,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
     private ProtocolManager protocolManager;
     private Configuration<ConfigConstants> configuration;
     private Translations translations;
+    private StorageApi storageApi;
 
     @Override
     public void onEnable() {
@@ -36,6 +42,8 @@ public class QualityQuestsPlugin extends JavaPlugin {
             return;
         }
         setupMessages();
+        storageApi = new FileApi(this);
+        setupCommands();
     }
 
     private void setupConfig() throws ConfigurationException {
@@ -82,6 +90,14 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .addCommand("qquests reload")
                 .withHandler(new QquestReload())
                 .requiresPermission("qquests.reload");
+
+        commando
+                .addCommand("qquests createQuest")
+                .withHandler(new CreateQuest())
+                .withArgument(new CarbonArgument.Builder("name")
+                .setHandler(new QuestHandler())
+                .create())
+                .requiresPermission("qquests.create");
     }
 
     @Override
@@ -92,9 +108,12 @@ public class QualityQuestsPlugin extends JavaPlugin {
     public static QualityQuestsPlugin getInstance() {
         return instance;
     }
+
     public Configuration<ConfigConstants> getConfiguration() {
         return configuration;
     }
+
+    public StorageApi getStorageApi() { return storageApi; }
 
     public Translations getTranslations() {
         return translations;
