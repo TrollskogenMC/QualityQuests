@@ -1,4 +1,4 @@
-package com.github.philipkoivunen.quality_quests.commandHandlers;
+package com.github.philipkoivunen.quality_quests.commands;
 
 import com.github.hornta.commando.ICommandHandler;
 import com.github.hornta.messenger.MessageManager;

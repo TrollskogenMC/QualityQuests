@@ -1,6 +1,6 @@
 package com.github.philipkoivunen.quality_quests.constants;
 
-public enum EasyMobConstants {
+public enum MobConstants {
     COW,
     CREEPER,
     CAVE_SPIDER,

@@ -1,4 +1,4 @@
-package com.github.philipkoivunen.quality_quests.commandHandlers;
+package com.github.philipkoivunen.quality_quests.commands.handlers;
 
 import com.github.hornta.commando.ValidationResult;
 import com.github.hornta.commando.completers.IArgumentHandler;

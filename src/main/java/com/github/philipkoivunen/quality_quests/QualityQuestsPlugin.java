@@ -11,9 +11,11 @@ import com.github.hornta.messenger.Translations;
 import com.github.hornta.versioned_config.*;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
 import com.github.philipkoivunen.quality_quests.apis.fileApi.FileApi;
-import com.github.philipkoivunen.quality_quests.commandHandlers.CreateQuest;
-import com.github.philipkoivunen.quality_quests.commandHandlers.QquestReload;
-import com.github.philipkoivunen.quality_quests.commandHandlers.QuestHandler;
+import com.github.philipkoivunen.quality_quests.commands.CreateQuest;
+import com.github.philipkoivunen.quality_quests.commands.QquestReload;
+import com.github.philipkoivunen.quality_quests.commands.handlers.QuestGoalCompleteParticipationHandler;
+import com.github.philipkoivunen.quality_quests.commands.handlers.QuestGoalTypeHandler;
+import com.github.philipkoivunen.quality_quests.commands.handlers.QuestHandler;
 import com.github.philipkoivunen.quality_quests.constants.ConfigConstants;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import org.bukkit.command.Command;
@@ -52,11 +54,6 @@ public class QualityQuestsPlugin extends JavaPlugin {
         cb.addMigration(new Migration(1, () -> {
             Patch<ConfigConstants> patch = new Patch<>();
             patch.set(ConfigConstants.LANGUAGE, "language", "english", Type.STRING);
-            patch.set(ConfigConstants.HARD_MOB_MIN, "hard_mob_min", 3, Type.INTEGER);
-            patch.set(ConfigConstants.EASY_MOB_MIN, "easy_mob_min", 10, Type.INTEGER);
-            patch.set(ConfigConstants.BOSS_MIN, "boss_min", 1, Type.INTEGER);
-            patch.set(ConfigConstants.EASY_BLOCK_MIN, "easy_block_min", 128, Type.INTEGER);
-            patch.set(ConfigConstants.HARD_BLOCK_MIN, "hard_block_min", 10, Type.INTEGER);
             return patch;
         }));
         configuration = cb.create();
@@ -93,10 +90,23 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
         commando
                 .addCommand("qquests createQuest")
-                .withHandler(new CreateQuest())
-                .withArgument(new CarbonArgument.Builder("name")
-                .setHandler(new QuestHandler())
-                .create())
+                .withHandler(new CreateQuest(storageApi))
+                //.withArgument(
+                //        new CarbonArgument.Builder("name")
+                //        .setHandler(new QuestHandler())
+                //        .create()
+                //)
+                .withArgument(
+                        new CarbonArgument.Builder("goal_type")
+                        .setHandler(new QuestGoalTypeHandler())
+                        .create()
+                        )
+
+                .withArgument(
+                        new CarbonArgument.Builder("complete_participation")
+                                .setHandler(new QuestGoalCompleteParticipationHandler())
+                                .create()
+                )
                 .requiresPermission("qquests.create");
     }
 

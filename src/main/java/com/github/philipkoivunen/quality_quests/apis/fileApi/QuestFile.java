@@ -32,19 +32,19 @@ public class QuestFile {
     }
 
     public void updateQuest(Quest quest) {
-        File questFile = new File(directory, quest.getQuestId() + ".yml");
+        File questFile = new File(directory, quest.questId + ".yml");
         CompletableFuture.supplyAsync(() -> {
             YamlConfiguration yaml = new YamlConfiguration();
 
             Map<String, Object> goalList = new LinkedHashMap<>();
-            goalList.put(GOAL_TYPE, quest.getGoalType());
-            if(quest.getMinParticipation() > 0) goalList.put(GOAL_MIN_PARTICIPATION, quest.getMinParticipation());
-            else goalList.put(GOAL_COMPLETE_PARTICIPATION, quest.getCompeteParticipation());
+            goalList.put(GOAL_TYPE, quest.goalType);
+            if(quest.minParticipation > 0) goalList.put(GOAL_MIN_PARTICIPATION, quest.minParticipation);
+            else goalList.put(GOAL_COMPLETE_PARTICIPATION, quest.completeParticipation);
 
 
-            yaml.set(QUEST_ID, quest.getQuestId());
+            yaml.set(QUEST_ID, quest.questId);
             yaml.set(GOAL_OBJECT, goalList);
-            yaml.set(TYPE, quest.getType());
+            yaml.set(TYPE, quest.type);
 
             try{
                 yaml.save(questFile);
@@ -58,7 +58,7 @@ public class QuestFile {
     }
 
     public void deleteQuest(Quest quest) {
-        File questFile = new File(directory, quest.getQuestId() + ".yml");
+        File questFile = new File(directory, quest.questId + ".yml");
 
         CompletableFuture.supplyAsync(() -> {
             boolean success = false;
@@ -78,7 +78,7 @@ public class QuestFile {
     }
 
     public void fetchQuest(Quest quest) {
-        File questFile = new File(directory, quest.getQuestId() + ".yml");
+        File questFile = new File(directory, quest.questId + ".yml");
         CompletableFuture.supplyAsync(() -> {
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(questFile);
         List<Map<String, Object>> goalEntries = (List<Map<String, Object>>)yaml.getList(GOAL_OBJECT);

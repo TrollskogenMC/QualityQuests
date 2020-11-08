@@ -6,7 +6,7 @@ main: com.github.philipkoivunen.quality_quests.QualityQuestsPlugin
 depend: []
 api-version: 1.15
 commands:
-  trail:
+  qquests:
 permissions:
   qualityquests.quest.quests:
     default: false
