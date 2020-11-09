@@ -1,6 +1,5 @@
 package com.github.philipkoivunen.quality_quests;
 
-import com.comphenix.protocol.ProtocolManager;
 import com.github.hornta.commando.CarbonArgument;
 import com.github.hornta.commando.CarbonCommand;
 import com.github.hornta.commando.Commando;
@@ -15,7 +14,6 @@ import com.github.philipkoivunen.quality_quests.commands.CreateQuest;
 import com.github.philipkoivunen.quality_quests.commands.QquestReload;
 import com.github.philipkoivunen.quality_quests.commands.handlers.QuestGoalCompleteParticipationHandler;
 import com.github.philipkoivunen.quality_quests.commands.handlers.QuestGoalTypeHandler;
-import com.github.philipkoivunen.quality_quests.commands.handlers.QuestHandler;
 import com.github.philipkoivunen.quality_quests.constants.ConfigConstants;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import org.bukkit.command.Command;
@@ -28,7 +26,6 @@ import java.util.List;
 public class QualityQuestsPlugin extends JavaPlugin {
     private static QualityQuestsPlugin instance;
     private Commando commando;
-    private ProtocolManager protocolManager;
     private Configuration<ConfigConstants> configuration;
     private Translations translations;
     private StorageApi storageApi;
@@ -36,6 +33,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        this.storageApi = new FileApi(this);
         try {
             setupConfig();
         } catch (ConfigurationException e) {
@@ -44,7 +42,6 @@ public class QualityQuestsPlugin extends JavaPlugin {
             return;
         }
         setupMessages();
-        storageApi = new FileApi(this);
         setupCommands();
     }
 
@@ -56,7 +53,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
             patch.set(ConfigConstants.LANGUAGE, "language", "english", Type.STRING);
             return patch;
         }));
-        configuration = cb.create();
+        this.configuration = cb.create();
     }
 
     private void setupMessages() {
@@ -66,6 +63,8 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .add(MessageConstants.MISSING_ARGUMENT, "missing_argument")
                 .add(MessageConstants.CONFIGURATION_RELOAD_SUCCESS, "configuration_reload_success")
                 .add(MessageConstants.CONFIGURATION_RELOAD_FAILURE, "configuration_reload_failure")
+                .add(MessageConstants.CREATE_QUEST_SUCCESS, "create_quest_success")
+                .add(MessageConstants.CREATE_QUEST_FAILED_PARAM, "create_quest_failed_param")
                 .build();
 
         translations = new Translations(this, messageManager);
@@ -76,26 +75,21 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return commando.handleAutoComplete(sender, command, args);
+        return this.commando.handleAutoComplete(sender, command, args);
     }
 
     private void setupCommands() {
-        commando = new Commando();
-        commando.setNoPermissionHandler((CommandSender sender, CarbonCommand command) -> MessageManager.sendMessage(sender, MessageConstants.NO_PERMISSION));
+        this.commando = new Commando();
+        this.commando.setNoPermissionHandler((CommandSender sender, CarbonCommand command) -> MessageManager.sendMessage(sender, MessageConstants.NO_PERMISSION));
 
-        commando
+        this.commando
                 .addCommand("qquests reload")
                 .withHandler(new QquestReload())
                 .requiresPermission("qquests.reload");
 
-        commando
+        this.commando
                 .addCommand("qquests createQuest")
-                .withHandler(new CreateQuest(storageApi))
-                //.withArgument(
-                //        new CarbonArgument.Builder("name")
-                //        .setHandler(new QuestHandler())
-                //        .create()
-                //)
+                .withHandler(new CreateQuest(this.storageApi))
                 .withArgument(
                         new CarbonArgument.Builder("goal_type")
                         .setHandler(new QuestGoalTypeHandler())
@@ -112,7 +106,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return  commando.handleCommand(sender, command, args);
+        return  this.commando.handleCommand(sender, command, args);
     }
 
     public static QualityQuestsPlugin getInstance() {
@@ -120,16 +114,16 @@ public class QualityQuestsPlugin extends JavaPlugin {
     }
 
     public Configuration<ConfigConstants> getConfiguration() {
-        return configuration;
+        return this.configuration;
     }
 
-    public StorageApi getStorageApi() { return storageApi; }
+    public StorageApi getStorageApi() { return this.storageApi; }
 
     public Translations getTranslations() {
-        return translations;
+        return this.translations;
     }
 
-    public ProtocolManager getProtocolManager() {
-        return protocolManager;
-    }
+    //public ProtocolManager getProtocolManager() {
+    //   return protocolManager;
+    //}
 }

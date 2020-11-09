@@ -24,7 +24,7 @@ public class QuestGoalTypeHandler implements IArgumentHandler {
 
     @Override
     public boolean test(Set<String> items, String argument) {
-        return true;
+        return items.contains(argument.toLowerCase());
     }
 
     @Override
