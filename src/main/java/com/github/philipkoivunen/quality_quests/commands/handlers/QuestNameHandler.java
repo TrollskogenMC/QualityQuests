@@ -7,7 +7,7 @@ import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 
 import java.util.Set;
 
-public class QuestHandler implements IArgumentHandler {
+public class QuestNameHandler implements IArgumentHandler {
     @Override
     public boolean test(Set<String> items, String argument) {
         if(argument.length() >= 3) return true;

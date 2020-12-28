@@ -14,8 +14,10 @@ import com.github.philipkoivunen.quality_quests.commands.CreateQuest;
 import com.github.philipkoivunen.quality_quests.commands.QquestReload;
 import com.github.philipkoivunen.quality_quests.commands.handlers.QuestGoalCompleteParticipationHandler;
 import com.github.philipkoivunen.quality_quests.commands.handlers.QuestGoalTypeHandler;
+import com.github.philipkoivunen.quality_quests.commands.handlers.QuestNameHandler;
 import com.github.philipkoivunen.quality_quests.constants.ConfigConstants;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
+import com.github.philipkoivunen.quality_quests.objects.Quests;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,11 +31,13 @@ public class QualityQuestsPlugin extends JavaPlugin {
     private Configuration<ConfigConstants> configuration;
     private Translations translations;
     private StorageApi storageApi;
+    private Quests quests;
 
     @Override
     public void onEnable() {
         instance = this;
         this.storageApi = new FileApi(this);
+        this.quests = new Quests();
         try {
             setupConfig();
         } catch (ConfigurationException e) {
@@ -43,6 +47,8 @@ public class QualityQuestsPlugin extends JavaPlugin {
         }
         setupMessages();
         setupCommands();
+
+        this.quests.setList(this.storageApi.fetchAllQuests());
     }
 
     private void setupConfig() throws ConfigurationException {
@@ -89,7 +95,12 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
         this.commando
                 .addCommand("qquests createQuest")
-                .withHandler(new CreateQuest(this.storageApi))
+                .withHandler(new CreateQuest(this.storageApi, quests))
+                .withArgument(
+                        new CarbonArgument.Builder("name")
+                                .setHandler(new QuestNameHandler())
+                                .create()
+                )
                 .withArgument(
                         new CarbonArgument.Builder("goal_type")
                         .setHandler(new QuestGoalTypeHandler())
@@ -112,13 +123,11 @@ public class QualityQuestsPlugin extends JavaPlugin {
     public static QualityQuestsPlugin getInstance() {
         return instance;
     }
-
     public Configuration<ConfigConstants> getConfiguration() {
         return this.configuration;
     }
-
     public StorageApi getStorageApi() { return this.storageApi; }
-
+    public Quests getQuests() { return this.quests; }
     public Translations getTranslations() {
         return this.translations;
     }
