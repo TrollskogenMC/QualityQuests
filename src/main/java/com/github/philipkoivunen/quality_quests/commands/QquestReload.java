@@ -17,6 +17,9 @@ public class QquestReload implements ICommandHandler {
             e.printStackTrace();
             MessageManager.sendMessage(commandSender, MessageConstants.CONFIGURATION_RELOAD_FAILURE);
         }
+
+       QualityQuestsPlugin.getInstance().getStorageApi().fetchAllQuests();
+
         Translation translation = QualityQuestsPlugin.getInstance().getTranslations().createTranslation(QualityQuestsPlugin.getInstance().getConfiguration().get(ConfigConstants.LANGUAGE));
         MessageManager.getInstance().setTranslation(translation);
         MessageManager.sendMessage(commandSender, MessageConstants.CONFIGURATION_RELOAD_SUCCESS);

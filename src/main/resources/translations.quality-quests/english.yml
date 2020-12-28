@@ -1,7 +1,8 @@
-no_permission: §cYou're not allowed to do that
-default_error: §cSomething went wrong
-missing_argument: §eWrong arguments was used.
-configuration_reload_failure: §cSomething went wrong during config reload
-configuration_reload_success: §eConfig successfully reloaded
-create_quest_failed_param: §eCreated the quest successfully
-create_quest_SUCCESS: §cSomething went wrong during creation of quest, did you use correct params?
+no_permission: "§cYou're not allowed to do that"
+default_error: "§cSomething went wrong"
+missing_argument: "§eWrong arguments was used."
+configuration_reload_failure: "§cSomething went wrong during config reload"
+configuration_reload_success: "§eConfig successfully reloaded"
+create_quest_failed_param: "§eCreated the quest successfully"
+create_quest_success: "§eQuest created successfully!""
+list_quest: "§e<quest_name>"

@@ -12,6 +12,7 @@ import com.github.philipkoivunen.quality_quests.apis.StorageApi;
 import com.github.philipkoivunen.quality_quests.apis.fileApi.FileApi;
 import com.github.philipkoivunen.quality_quests.commands.CreateQuest;
 import com.github.philipkoivunen.quality_quests.commands.QquestReload;
+import com.github.philipkoivunen.quality_quests.commands.QquestsList;
 import com.github.philipkoivunen.quality_quests.commands.handlers.QuestGoalCompleteParticipationHandler;
 import com.github.philipkoivunen.quality_quests.commands.handlers.QuestGoalTypeHandler;
 import com.github.philipkoivunen.quality_quests.commands.handlers.QuestNameHandler;
@@ -48,7 +49,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
         setupMessages();
         setupCommands();
 
-        this.quests.setList(this.storageApi.fetchAllQuests());
+        this.storageApi.fetchAllQuests();
     }
 
     private void setupConfig() throws ConfigurationException {
@@ -70,6 +71,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .add(MessageConstants.CONFIGURATION_RELOAD_SUCCESS, "configuration_reload_success")
                 .add(MessageConstants.CONFIGURATION_RELOAD_FAILURE, "configuration_reload_failure")
                 .add(MessageConstants.CREATE_QUEST_SUCCESS, "create_quest_success")
+                .add(MessageConstants.LIST_QUEST, "list_quest")
                 .add(MessageConstants.CREATE_QUEST_FAILED_PARAM, "create_quest_failed_param")
                 .build();
 
@@ -92,6 +94,11 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .addCommand("qquests reload")
                 .withHandler(new QquestReload())
                 .requiresPermission("qquests.reload");
+
+        this.commando
+                .addCommand("qquests list")
+                .withHandler(new QquestsList())
+                .requiresPermission("qquests.list");
 
         this.commando
                 .addCommand("qquests createQuest")

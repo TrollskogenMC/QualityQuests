@@ -28,6 +28,7 @@ public class QuestFile {
     private static final String GOAL_MIN_PARTICIPATION = "min_participation"; //optional automatically set to complete participation
     private static final String GOAL_COMPLETE_PARTICIPATION = "complete_participation";
     private static final String GOAL_MOB = "goal_mob";
+    private static final String GOAL_BLOCK = "goal_block";
     private static final String TYPE = "type";
     private File directory;
 
@@ -47,6 +48,7 @@ public class QuestFile {
             if (quest.minParticipation > 0) goalList.put(GOAL_MIN_PARTICIPATION, quest.minParticipation);
             else goalList.put(GOAL_COMPLETE_PARTICIPATION, quest.completeParticipation);
             goalList.put(GOAL_MOB, quest.mobToKill);
+            goalList.put(GOAL_MOB, quest.blockToDestroy);
 
             yaml.set(QUEST_ID, quest.questId.toString());
             yaml.set(QUEST_NAME, quest.questName);

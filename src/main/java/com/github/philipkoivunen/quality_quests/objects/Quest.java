@@ -12,7 +12,14 @@ public class Quest {
     public String goalType;
     public String questName;
     public Mob mobToKill;
+    public String blockToDestroy;
+    public String versionNr;
 
+    public Quest() {
+        this.setQuestVersionNr("1");
+    }
+
+    public void setQuestVersionNr(String versionNr) { this.versionNr = versionNr; }
     public void setQuestId(UUID questId) { this.questId = questId; }
     public void setQuestName(String name) { this.questName = name; }
     public void setType(String type) { this.type = type; }
@@ -20,4 +27,5 @@ public class Quest {
     public void setCompleteParticipation(Integer completeParticipation) { this.completeParticipation = completeParticipation; }
     public void setGoalType(String goalType) { this.goalType = goalType;}
     public void setMobToKill(Mob mob) { this.mobToKill = mob;}
+    public void setBlockToDestroy(String block) { this.blockToDestroy = block;}
 }

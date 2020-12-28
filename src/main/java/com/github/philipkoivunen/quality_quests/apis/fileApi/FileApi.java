@@ -6,8 +6,6 @@ import com.github.philipkoivunen.quality_quests.objects.Quest;
 import com.github.philipkoivunen.quality_quests.objects.QuestPlayer;
 import org.bukkit.plugin.Plugin;
 
-import java.util.List;
-
 public class FileApi extends StorageApi {
     QuestFile questFile;
 
