@@ -10,12 +10,8 @@ import com.github.hornta.messenger.Translations;
 import com.github.hornta.versioned_config.*;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
 import com.github.philipkoivunen.quality_quests.apis.fileApi.FileApi;
-import com.github.philipkoivunen.quality_quests.commands.CreateQuest;
-import com.github.philipkoivunen.quality_quests.commands.QquestReload;
-import com.github.philipkoivunen.quality_quests.commands.QquestsList;
-import com.github.philipkoivunen.quality_quests.commands.handlers.QuestGoalCompleteParticipationHandler;
-import com.github.philipkoivunen.quality_quests.commands.handlers.QuestGoalTypeHandler;
-import com.github.philipkoivunen.quality_quests.commands.handlers.QuestNameHandler;
+import com.github.philipkoivunen.quality_quests.commands.*;
+import com.github.philipkoivunen.quality_quests.commands.handlers.*;
 import com.github.philipkoivunen.quality_quests.constants.ConfigConstants;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import com.github.philipkoivunen.quality_quests.objects.Quests;
@@ -71,8 +67,12 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .add(MessageConstants.CONFIGURATION_RELOAD_SUCCESS, "configuration_reload_success")
                 .add(MessageConstants.CONFIGURATION_RELOAD_FAILURE, "configuration_reload_failure")
                 .add(MessageConstants.CREATE_QUEST_SUCCESS, "create_quest_success")
-                .add(MessageConstants.LIST_QUEST, "list_quest")
+                .add(MessageConstants.LIST_QUESTS_TITLE, "list_quests_title")
+                .add(MessageConstants.LIST_QUEST_KILL, "list_quest_kill")
+                .add(MessageConstants.LIST_QUEST_BREAK, "list_quest_break")
+                .add(MessageConstants.LIST_QUEST_CUSTOM, "list_quest_custom")
                 .add(MessageConstants.CREATE_QUEST_FAILED_PARAM, "create_quest_failed_param")
+                .add(MessageConstants.LIST_QUEST_EMPTY, "list_quest_empty")
                 .build();
 
         translations = new Translations(this, messageManager);
@@ -99,6 +99,31 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .addCommand("qquests list")
                 .withHandler(new QquestsList())
                 .requiresPermission("qquests.list");
+
+        this.commando
+                .addCommand("qquests setMob")
+                .withHandler(new QquestsSetMob())
+                .withArgument(
+                        new CarbonArgument.Builder("questName")
+                                .setHandler(new QuestHandler())
+                                .create()
+                )
+                .withArgument(
+                        new CarbonArgument.Builder("mob")
+                                .setHandler(new QuestMobHandler())
+                                .create()
+                )
+                .requiresPermission("qquests.setMob");
+
+        this.commando
+                .addCommand("qquests setBlock")
+                .withHandler(new QquestsSetBlock())
+                .withArgument(
+                new CarbonArgument.Builder("block")
+                        .setHandler(new QuestMobHandler())
+                        .create()
+        )
+                .requiresPermission("qquests.setBlock");
 
         this.commando
                 .addCommand("qquests createQuest")

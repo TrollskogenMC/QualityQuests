@@ -47,6 +47,7 @@ public class QuestFile {
 
             if (quest.minParticipation > 0) goalList.put(GOAL_MIN_PARTICIPATION, quest.minParticipation);
             else goalList.put(GOAL_COMPLETE_PARTICIPATION, quest.completeParticipation);
+
             goalList.put(GOAL_MOB, quest.mobToKill);
             goalList.put(GOAL_MOB, quest.blockToDestroy);
 
