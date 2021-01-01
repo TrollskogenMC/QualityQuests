@@ -13,6 +13,8 @@ public enum MobConstants {
     RABBIT,
     PIGLIN,
     ZOGLIN,
+    ZOMBIE,
+    SPIDER,
     PILLAGER,
     EVOKER,
     DROWNED,

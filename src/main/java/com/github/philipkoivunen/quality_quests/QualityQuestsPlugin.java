@@ -102,7 +102,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
         this.commando
                 .addCommand("qquests setMob")
-                .withHandler(new QquestsSetMob())
+                .withHandler(new QquestsSetMob(getInstance(), getQuests(), getStorageApi()))
                 .withArgument(
                         new CarbonArgument.Builder("questName")
                                 .setHandler(new QuestHandler())
@@ -117,10 +117,15 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
         this.commando
                 .addCommand("qquests setBlock")
-                .withHandler(new QquestsSetBlock())
+                .withHandler(new QquestsSetBlock(getInstance(), getQuests(), getStorageApi()))
+                .withArgument(
+                        new CarbonArgument.Builder("questName")
+                                .setHandler(new QuestHandler())
+                                .create()
+                )
                 .withArgument(
                 new CarbonArgument.Builder("block")
-                        .setHandler(new QuestMobHandler())
+                        .setHandler(new QuestBlockHandler())
                         .create()
         )
                 .requiresPermission("qquests.setBlock");

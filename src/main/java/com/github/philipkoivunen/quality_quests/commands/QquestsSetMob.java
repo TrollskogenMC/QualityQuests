@@ -11,10 +11,10 @@ public class QquestsSetMob implements ICommandHandler {
     private QualityQuestsPlugin pluginInstance;
     private Quests quests;
     private StorageApi storageApi;
-    public  QquestsSetMob() {
-        this.pluginInstance = QualityQuestsPlugin.getInstance();
-        this.quests = this.pluginInstance.getQuests();
-        this.storageApi = this.pluginInstance.getStorageApi();
+    public  QquestsSetMob(QualityQuestsPlugin plugin, Quests questsInstance, StorageApi storageApiInstance) {
+        this.pluginInstance = plugin;
+        this.quests = questsInstance;
+        this.storageApi = storageApiInstance;
     }
 
     @Override

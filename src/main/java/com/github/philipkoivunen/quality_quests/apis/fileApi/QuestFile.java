@@ -49,7 +49,7 @@ public class QuestFile {
             else goalList.put(GOAL_COMPLETE_PARTICIPATION, quest.completeParticipation);
 
             goalList.put(GOAL_MOB, quest.mobToKill);
-            goalList.put(GOAL_MOB, quest.blockToDestroy);
+            goalList.put(GOAL_BLOCK, quest.blockToDestroy);
 
             yaml.set(QUEST_ID, quest.questId.toString());
             yaml.set(QUEST_NAME, quest.questName);
