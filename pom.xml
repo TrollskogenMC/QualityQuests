@@ -77,6 +77,15 @@
                             <destFileName>${project.artifactId}-${project.version}.jar</destFileName>
                         </artifactItem>
                         <artifactItem>
+                            <groupId>com.github.hornta</groupId>
+                            <artifactId>trollskogen-core</artifactId>
+                            <version>1.0-SNAPSHOT</version>
+                            <type>jar</type>
+                            <overWrite>yes</overWrite>
+                            <outputDirectory>${project.basedir}/server/plugins</outputDirectory>
+                            <destFileName>trollskogen-core-1.0-SNAPSHOT.jar</destFileName>
+                        </artifactItem>
+                        <artifactItem>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>${project.artifactId}</artifactId>
                             <version>${project.version}</version>
@@ -137,6 +146,12 @@
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>4.5.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hornta</groupId>
+            <artifactId>trollskogen-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -36,7 +36,7 @@ public class Quests {
         List<Quest> newQuestList = null;
         for(int i = 0; i < quests.size(); i++) {
             Quest q = quests.get(i);
-            if(q.questId != quest.questId) newQuestList.add(quest);
+            if(q.questId != quest.questId) newQuestList.add(q);
         }
 
         setList(newQuestList);
@@ -54,5 +54,4 @@ public class Quests {
         }
         return quest;
     }
-
 }

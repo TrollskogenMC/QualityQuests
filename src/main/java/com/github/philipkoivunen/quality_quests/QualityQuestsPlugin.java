@@ -14,6 +14,8 @@ import com.github.philipkoivunen.quality_quests.commands.*;
 import com.github.philipkoivunen.quality_quests.commands.handlers.*;
 import com.github.philipkoivunen.quality_quests.constants.ConfigConstants;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
+import com.github.philipkoivunen.quality_quests.objects.OngoingQuest;
+import com.github.philipkoivunen.quality_quests.objects.OngoingQuests;
 import com.github.philipkoivunen.quality_quests.objects.Quests;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -21,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.List;
+import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 
 public class QualityQuestsPlugin extends JavaPlugin {
     private static QualityQuestsPlugin instance;
@@ -29,12 +32,17 @@ public class QualityQuestsPlugin extends JavaPlugin {
     private Translations translations;
     private StorageApi storageApi;
     private Quests quests;
+    private OngoingQuests ongoingQuests;
 
     @Override
     public void onEnable() {
         instance = this;
         this.storageApi = new FileApi(this);
         this.quests = new Quests();
+        this.ongoingQuests = new OngoingQuests();
+
+        TrollskogenCorePlugin.getServerReady().waitFor(this);
+
         try {
             setupConfig();
         } catch (ConfigurationException e) {
@@ -167,6 +175,10 @@ public class QualityQuestsPlugin extends JavaPlugin {
     public Quests getQuests() { return this.quests; }
     public Translations getTranslations() {
         return this.translations;
+    }
+
+    public OngoingQuests getOngoingQuests() {
+        return this.ongoingQuests;
     }
 
     //public ProtocolManager getProtocolManager() {
