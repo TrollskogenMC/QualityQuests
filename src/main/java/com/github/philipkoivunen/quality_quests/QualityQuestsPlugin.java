@@ -7,6 +7,8 @@ import com.github.hornta.messenger.MessageManager;
 import com.github.hornta.messenger.MessagesBuilder;
 import com.github.hornta.messenger.Translation;
 import com.github.hornta.messenger.Translations;
+import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
+import com.github.hornta.trollskogen_core.events.PluginReadyEvent;
 import com.github.hornta.versioned_config.*;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
 import com.github.philipkoivunen.quality_quests.apis.fileApi.FileApi;
@@ -14,16 +16,15 @@ import com.github.philipkoivunen.quality_quests.commands.*;
 import com.github.philipkoivunen.quality_quests.commands.handlers.*;
 import com.github.philipkoivunen.quality_quests.constants.ConfigConstants;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
-import com.github.philipkoivunen.quality_quests.objects.OngoingQuest;
 import com.github.philipkoivunen.quality_quests.objects.OngoingQuests;
 import com.github.philipkoivunen.quality_quests.objects.Quests;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.List;
-import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 
 public class QualityQuestsPlugin extends JavaPlugin {
     private static QualityQuestsPlugin instance;
@@ -42,7 +43,6 @@ public class QualityQuestsPlugin extends JavaPlugin {
         this.ongoingQuests = new OngoingQuests();
 
         TrollskogenCorePlugin.getServerReady().waitFor(this);
-
         try {
             setupConfig();
         } catch (ConfigurationException e) {
@@ -65,6 +65,9 @@ public class QualityQuestsPlugin extends JavaPlugin {
             return patch;
         }));
         this.configuration = cb.create();
+
+
+        Bukkit.getPluginManager().callEvent(new PluginReadyEvent(this));
     }
 
     private void setupMessages() {

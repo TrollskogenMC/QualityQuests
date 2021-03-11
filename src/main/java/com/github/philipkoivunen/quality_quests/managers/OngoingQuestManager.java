@@ -2,6 +2,7 @@ package com.github.philipkoivunen.quality_quests.managers;
 
 import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 import com.github.hornta.trollskogen_core.events.PluginReadyEvent;
+import com.github.hornta.trollskogen_core.users.UserObject;
 import com.github.hornta.trollskogen_core.users.events.LoadUsersEvent;
 import com.github.philipkoivunen.quality_quests.QualityQuestsPlugin;
 import com.github.philipkoivunen.quality_quests.deserializers.OngoingQuestDeserializer;
@@ -26,12 +27,13 @@ import java.util.logging.Level;
 
 public class OngoingQuestManager implements Listener {
     private final HashMap<Integer, List<OngoingQuest>> userToOngoingQuests;
-    private final OngoingQuests ongoingQuests;
     private final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-
+    private final QualityQuestsPlugin qualityQuestsPlugin;
+    private final OngoingQuests ongoingQuests;
     public OngoingQuestManager() {
-        ongoingQuests = new OngoingQuests();
         userToOngoingQuests = new HashMap<>();
+        qualityQuestsPlugin = QualityQuestsPlugin.getInstance();
+        ongoingQuests = qualityQuestsPlugin.getOngoingQuests();
     }
 
     public static OngoingQuest parseOngoingQuest(JsonObject json) {
@@ -41,6 +43,18 @@ public class OngoingQuestManager implements Listener {
             json.get("participation").getAsInt(),
             json.get("isActive").getAsBoolean()
         );
+    }
+
+    private void postOngoingQuest(UserObject userObject, OngoingQuest ongoingQuest) {
+        JsonObject json = new JsonObject();
+        json.addProperty("id", ongoingQuest.id);
+        json.addProperty("quest_id", ongoingQuest.questId);
+        json.addProperty("user_id", ongoingQuest.userId);
+        json.addProperty("is_active", ongoingQuest.isActive);
+
+        scheduledExecutor.submit(() -> {
+
+        });
     }
 
     private void loadAllOngoingQuests() {
@@ -124,4 +138,14 @@ public class OngoingQuestManager implements Listener {
     void onRequestDeleteOngoingQuest(RequestDeleteOngoingQuestEvent event) {
         deleteOngoingQuest(event.getOngoingQuest());
     }
+
+    //@EventHandler
+    //void onRequestAddOngoingQuest(RequestAddOngoingQuestEvent event) {
+
+    //}
+
+   // @EventHandler
+   // void onRequestPatchOngoingQuest(RequestPatchOngoingQuestEvent event) {
+   //     patchOngoingQuest(event.getOngoingQuest());
+   // }
 }
