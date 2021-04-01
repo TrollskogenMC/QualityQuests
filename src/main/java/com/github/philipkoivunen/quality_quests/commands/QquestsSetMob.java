@@ -1,8 +1,10 @@
 package com.github.philipkoivunen.quality_quests.commands;
 
 import com.github.hornta.commando.ICommandHandler;
+import com.github.hornta.messenger.MessageManager;
 import com.github.philipkoivunen.quality_quests.QualityQuestsPlugin;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
+import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import com.github.philipkoivunen.quality_quests.objects.Quest;
 import com.github.philipkoivunen.quality_quests.objects.Quests;
 import org.bukkit.command.CommandSender;
@@ -26,8 +28,10 @@ public class QquestsSetMob implements ICommandHandler {
         if(quest != null) {
             quest.setMobToKill(mobName);
             this.storageApi.updateQuest(quest);
+            MessageManager.sendMessage(commandSender, MessageConstants.UPDATE_QUEST_SUCCESS);
+
         } else {
-            //TODO: Log error
+            MessageManager.sendMessage(commandSender, MessageConstants.UPDATE_QUEST_ERROR);
         }
     }
 }

@@ -33,4 +33,8 @@ public class Quest {
     public static String getQuestName(Quest quest) {
         return quest.questName.toLowerCase(Locale.ENGLISH);
     }
+
+    public static String getQuestId(Quest quest) {
+        return  quest.questId.toString();
+    }
 }

@@ -2,6 +2,7 @@ package com.github.philipkoivunen.quality_quests.objects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 public class Quests {
@@ -53,5 +54,23 @@ public class Quests {
             if (q.questName.toLowerCase().equals(name)) quest = q;
         }
         return quest;
+    }
+
+    public List<Quest> getQuestsByType(String type) {
+        List<Quest> quests = new ArrayList<>();
+        for (int i = 0; i < quests.size(); i++) {
+            Quest q = quests.get(i);
+            if (q.type.toLowerCase().equals(type)) quests.add(q);
+        }
+        return quests;
+    }
+
+    public Quest getQuestByUUID(UUID uuid) {
+        Quest quest = null;
+        for (int i = 0; i < quests.size(); i++) {
+            Quest q = quests.get(i);
+            if (q.questId.equals(uuid)) quest = q;
+        }
+        return  quest;
     }
 }

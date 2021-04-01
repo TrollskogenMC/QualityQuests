@@ -7,6 +7,7 @@ import com.github.hornta.trollskogen_core.users.events.LoadUsersEvent;
 import com.github.philipkoivunen.quality_quests.QualityQuestsPlugin;
 import com.github.philipkoivunen.quality_quests.deserializers.OngoingQuestDeserializer;
 import com.github.philipkoivunen.quality_quests.deserializers.PatchedOngoingQuestDeserializer;
+import com.github.philipkoivunen.quality_quests.deserializers.PostedOngoingQuestDeserializer;
 import com.github.philipkoivunen.quality_quests.events.DeleteOngoingQuestsEvent;
 import com.github.philipkoivunen.quality_quests.events.LoadOngoingQuestsEvent;
 import com.github.philipkoivunen.quality_quests.events.RequestDeleteOngoingQuestEvent;
@@ -19,8 +20,11 @@ import org.asynchttpclient.Response;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
@@ -36,28 +40,50 @@ public class OngoingQuestManager implements Listener {
         ongoingQuests = qualityQuestsPlugin.getOngoingQuests();
     }
 
-    public static OngoingQuest parseOngoingQuest(JsonObject json) {
+    public static OngoingQuest parseOngoingQuest(@NotNull JsonObject json) {
         return new OngoingQuest(json.get("id").getAsInt(),
-            json.get("userId").getAsInt(),
-            json.get("questId").getAsInt(),
+            json.get("user_id").getAsInt(),
+            UUID.fromString(json.get("quest_id").getAsString()),
             json.get("participation").getAsInt(),
-            json.get("isActive").getAsBoolean()
+            json.get("is_active").getAsBoolean(),
+            json.get("is_complete").getAsBoolean(),
+            json.get("name").getAsString()
         );
     }
 
-    private void postOngoingQuest(UserObject userObject, OngoingQuest ongoingQuest) {
+    public void postOngoingQuest(UserObject userObject, OngoingQuest ongoingQuest) {
         JsonObject json = new JsonObject();
-        json.addProperty("id", ongoingQuest.id);
-        json.addProperty("quest_id", ongoingQuest.questId);
+        //json.addProperty("id", ongoingQuest.id);
+        json.addProperty("quest_id", ongoingQuest.questId.toString());
         json.addProperty("user_id", ongoingQuest.userId);
         json.addProperty("is_active", ongoingQuest.isActive);
+        json.addProperty("is_complete", ongoingQuest.isComplete);
+        json.addProperty("participation", ongoingQuest.participation);
+        json.addProperty("name", ongoingQuest.name);
 
         scheduledExecutor.submit(() -> {
+            TrollskogenCorePlugin.request("POST", "/ongoingquests", json, (Response response) -> {
+                Gson gson = new GsonBuilder().
+                        registerTypeAdapter(OngoingQuest.class, new PostedOngoingQuestDeserializer())
+                        .create();
+                OngoingQuest parsedOngoingQuest;
 
+                try {
+                    parsedOngoingQuest = gson.fromJson(response.getResponseBody(), OngoingQuest.class);
+                } catch (Throwable ex) {
+                    Bukkit.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+                    return;
+                }
+
+                Bukkit.getScheduler().callSyncMethod(TrollskogenCorePlugin.getPlugin(), () -> {
+                    ongoingQuests.addOngoingQuest(parsedOngoingQuest);
+                    return null;
+                });
+            });
         });
     }
 
-    private void loadAllOngoingQuests() {
+    public void loadAllOngoingQuests() {
         scheduledExecutor.submit(() -> {
             TrollskogenCorePlugin.request("GET", "/ongoingquests", (Response response) -> {
                 Gson gson = new GsonBuilder()
@@ -77,7 +103,7 @@ public class OngoingQuestManager implements Listener {
                    for(OngoingQuest o: parsedOngoingQuests) {
                        ongoingQuests.addOngoingQuest(o);
                    }
-                   Bukkit.getLogger().info("Loaded " + parsedOngoingQuests + " ongoingquests");
+                   Bukkit.getLogger().info("Loaded " + parsedOngoingQuests.length+ " ongoingquests");
 
                     Bukkit.getPluginManager().callEvent(new LoadOngoingQuestsEvent(this));
                     Bukkit.getPluginManager().callEvent(new PluginReadyEvent(QualityQuestsPlugin.getInstance()));
@@ -87,7 +113,7 @@ public class OngoingQuestManager implements Listener {
         });
     }
 
-    private void patchOngoingQuest(OngoingQuest ongoingQuest) {
+    public void patchOngoingQuest(OngoingQuest ongoingQuest) {
         scheduledExecutor.submit(() -> {
             TrollskogenCorePlugin.request("PATCH", "/ongoingquests/" + ongoingQuest.id, (Response response) -> {
                 Gson gson = new GsonBuilder().
@@ -128,24 +154,4 @@ public class OngoingQuestManager implements Listener {
            });
         });
     }
-
-    @EventHandler
-    void onLoadUsers(LoadUsersEvent event) {
-        loadAllOngoingQuests();
-    }
-
-    @EventHandler
-    void onRequestDeleteOngoingQuest(RequestDeleteOngoingQuestEvent event) {
-        deleteOngoingQuest(event.getOngoingQuest());
-    }
-
-    //@EventHandler
-    //void onRequestAddOngoingQuest(RequestAddOngoingQuestEvent event) {
-
-    //}
-
-   // @EventHandler
-   // void onRequestPatchOngoingQuest(RequestPatchOngoingQuestEvent event) {
-   //     patchOngoingQuest(event.getOngoingQuest());
-   // }
 }

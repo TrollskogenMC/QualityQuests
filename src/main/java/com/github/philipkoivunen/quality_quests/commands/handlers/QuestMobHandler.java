@@ -5,7 +5,6 @@ import com.github.hornta.commando.completers.IArgumentHandler;
 import com.github.hornta.messenger.MessageManager;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import com.github.philipkoivunen.quality_quests.constants.MobConstants;
-import com.github.philipkoivunen.quality_quests.constants.QuestTypeConstants;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;

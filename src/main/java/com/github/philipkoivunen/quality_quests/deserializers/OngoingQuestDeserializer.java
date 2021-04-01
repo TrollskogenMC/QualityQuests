@@ -13,7 +13,7 @@ public class OngoingQuestDeserializer implements JsonDeserializer<OngoingQuest[]
     public OngoingQuest[] deserialize(JsonElement elem, Type type, JsonDeserializationContext context) throws JsonParseException {
         ArrayList<OngoingQuest> ongoingQuests = new ArrayList<>();
 
-        for(JsonElement j : elem.getAsJsonObject().getAsJsonArray("ongoingquests")) {
+        for(JsonElement j : elem.getAsJsonObject().getAsJsonArray("ongoingQuests")) {
             JsonObject json = j.getAsJsonObject();
             OngoingQuest ongoingQuest = OngoingQuestManager.parseOngoingQuest(json);
 

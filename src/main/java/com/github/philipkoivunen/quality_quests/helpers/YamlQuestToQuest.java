@@ -7,15 +7,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.util.UUID;
 
 public class YamlQuestToQuest {
-    private static final String QUEST_DIRECTORY = "quests";
+
     private static final String QUEST_NAME = "name";
     private static final String QUEST_ID = "id";
     private static final String GOAL_OBJECT = "goal";
     private static final String GOAL_TYPE = "type"; //kill custom or break
-    private static final String GOAL_MIN_PARTICIPATION = "min_participation"; //optional automatically set to complete participation
-    private static final String GOAL_COMPLETE_PARTICIPATION = "complete_participation";
+    private static final String GOAL_MIN_PARTICIPATION = "min_participation";
     private static final String GOAL_MOB = "goal_mob";
+    private static final String GOAL_BLOCK = "goal_block";
     private static final String TYPE = "type";
+
 
     public static Quest Convert(YamlConfiguration yamlData) {
         Quest quest = new Quest();
@@ -24,6 +25,8 @@ public class YamlQuestToQuest {
 
         quest.setGoalType((String) goalEntries.get(GOAL_TYPE));
         quest.setMinParticipationInteger((Integer) goalEntries.get(GOAL_MIN_PARTICIPATION));
+        quest.setMobToKill((String) goalEntries.get(GOAL_MOB));
+        quest.setBlockToDestroy((String) goalEntries.get(GOAL_BLOCK));
 
         quest.setType(yamlData.getString(TYPE));
         quest.setQuestId(UUID.fromString(yamlData.getString(QUEST_ID)));

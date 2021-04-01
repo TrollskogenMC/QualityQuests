@@ -2,6 +2,7 @@ package com.github.philipkoivunen.quality_quests.objects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class OngoingQuests {
     private List<OngoingQuest> ongoingQuests;
@@ -18,7 +19,8 @@ public class OngoingQuests {
             for (OngoingQuest o : ongoingQuests) {
                 if(o.id == ongoingQuest.id) {
                     hasFound = true;
-                }
+                } else if( o.questId == ongoingQuest.questId)
+                    hasFound = true;
             }
             if(!hasFound) {
                 ongoingQuests.add(ongoingQuest);
@@ -30,7 +32,7 @@ public class OngoingQuests {
     }
 
     public List<OngoingQuest> getPlayersOngoingQuests(int playerId) {
-        List<OngoingQuest> newOngoingQuestList = null;
+        List<OngoingQuest> newOngoingQuestList = new ArrayList<>();
         for(int i = 0; i < ongoingQuests.size(); i++) {
             OngoingQuest o =ongoingQuests.get(i);
             if(o.userId == playerId) {
@@ -46,6 +48,30 @@ public class OngoingQuests {
         for(int i = 0; i < ongoingQuests.size(); i++) {
             OngoingQuest o =ongoingQuests.get(i);
             if(o.userId == playerId && o.isActive) {
+                newOngoingQuestList.add(o);
+            }
+        }
+
+        return newOngoingQuestList;
+    }
+
+    public List<OngoingQuest> getPlayersActiveOngoingQuestsByQuestId(int playerId, UUID questId) {
+        List<OngoingQuest> newOngoingQuestList = null;
+        for(int i = 0; i < ongoingQuests.size(); i++) {
+            OngoingQuest o =ongoingQuests.get(i);
+            if(o.userId == playerId && o.isActive && o.questId == questId ) {
+                newOngoingQuestList.add(o);
+            }
+        }
+
+        return newOngoingQuestList;
+    }
+
+    public List<OngoingQuest> getPlayersDeactivatedQuests(int playerId) {
+        List<OngoingQuest> newOngoingQuestList = null;
+        for(int i = 0; i < ongoingQuests.size(); i++) {
+            OngoingQuest o =ongoingQuests.get(i);
+            if(o.userId == playerId && !o.isActive) {
                 newOngoingQuestList.add(o);
             }
         }
@@ -73,4 +99,5 @@ public class OngoingQuests {
     public void clear() {
         this.ongoingQuests.clear();
     }
+
 }
