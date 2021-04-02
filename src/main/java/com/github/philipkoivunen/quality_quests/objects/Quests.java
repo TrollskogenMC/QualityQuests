@@ -1,5 +1,11 @@
 package com.github.philipkoivunen.quality_quests.objects;
 
+import com.github.philipkoivunen.quality_quests.constants.QuestTypeConstants;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,12 +63,12 @@ public class Quests {
     }
 
     public List<Quest> getQuestsByType(String type) {
-        List<Quest> quests = new ArrayList<>();
-        for (int i = 0; i < quests.size(); i++) {
-            Quest q = quests.get(i);
-            if (q.type.toLowerCase().equals(type)) quests.add(q);
+        List<Quest> foundQuests = new ArrayList<>();
+        for (int i = 0; i < this.quests.size(); i++) {
+            Quest q = this.quests.get(i);
+            if (q.goalType.toLowerCase().equals(type.toLowerCase())) foundQuests.add(q);
         }
-        return quests;
+        return foundQuests;
     }
 
     public Quest getQuestByUUID(UUID uuid) {
@@ -72,5 +78,24 @@ public class Quests {
             if (q.questId.equals(uuid)) quest = q;
         }
         return  quest;
+    }
+
+    public List<Quest> getQuestsByMobToKill(EntityType entityType) {
+        List<Quest> foundQuests = new ArrayList<>();
+        for (int i = 0; i < this.quests.size(); i++) {
+            Quest q = this.quests.get(i);
+            if (q.goalType == QuestTypeConstants.KILL.toString() && entityType.name().toLowerCase().equals(q.mobToKill.toLowerCase())) foundQuests.add(q);
+        }
+        return foundQuests;
+    }
+
+    public List<Quest> getQuestsByBlockToBreak(Material material) {
+        List<Quest> foundQuests = new ArrayList<>();
+        for (int i = 0; i < this.quests.size(); i++) {
+            Quest q = this.quests.get(i);
+
+            if (q.goalType == QuestTypeConstants.BREAK_BLOCK.toString() && material.name().toLowerCase().equals(q.blockToDestroy.toLowerCase())) foundQuests.add(q);
+        }
+        return foundQuests;
     }
 }

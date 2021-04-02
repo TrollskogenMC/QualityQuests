@@ -31,45 +31,53 @@ public class QquestsList implements ICommandHandler {
         } else {
             MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUESTS_TITLE);
             for(Quest quest: quests.getQuests()) {
+                OngoingQuest ongoingQuest = null;
+
+                for(OngoingQuest o : ongoingQuests) {
+                    if(o.questId.equals(quest.questId)) {
+                        ongoingQuest = o;
+                        break;
+                    }
+                }
+
                 //Quest quest = quests.getQuestByUUID(quests.questId);
-                MessageManager.setValue("quest_name", quest.questName);
-                if (quest.goalType.equals("kill")) {
-                    //TODO: Get active quest-data and get my progress
-                    MessageManager.setValue("progress_current", 0);
-                    MessageManager.setValue("progress_max", quest.minParticipation);
-                    MessageManager.setValue("mob", quest.mobToKill);
-                    //MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_KILL);
+                if(ongoingQuest != null) {
+                    MessageManager.setValue("quest_name", quest.questName);
+                    if (quest.goalType.equals("kill")) {
+                        MessageManager.setValue("progress_current", ongoingQuest.participation);
+                        MessageManager.setValue("progress_max", quest.minParticipation);
+                        MessageManager.setValue("mob", quest.mobToKill);
+                        //MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_KILL);
 
-                    ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
+                        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
 
-                    TextComponent tc = new TextComponent();
-                    tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_KILL)).event(clickEvent).create()[0]);
+                        TextComponent tc = new TextComponent();
+                        tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_KILL)).event(clickEvent).create()[0]);
 
-                    commandSender.spigot().sendMessage(tc);
-                } else if (quest.goalType.equals("break_block")) {
-                    //TODO: Get active quest-data and get my progress
-                    MessageManager.setValue("progress_current", 0);
-                    MessageManager.setValue("progress_max", quest.minParticipation);
-                    MessageManager.setValue("block", quest.blockToDestroy);
-                    //MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_BREAK);
+                        commandSender.spigot().sendMessage(tc);
+                    } else if (quest.goalType.equals("break_block")) {
+                        MessageManager.setValue("progress_current", ongoingQuest.participation);
+                        MessageManager.setValue("progress_max", quest.minParticipation);
+                        MessageManager.setValue("block", quest.blockToDestroy);
+                        //MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_BREAK);
 
-                    ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
-                    TextComponent tc = new TextComponent();
-                    tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_BREAK)).event(clickEvent).create()[0]);
+                        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
+                        TextComponent tc = new TextComponent();
+                        tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_BREAK)).event(clickEvent).create()[0]);
 
-                    commandSender.spigot().sendMessage(tc);
-                } else {
-                    //TODO: Get active quest-data and get my progress
-                    MessageManager.setValue("progress_current", 0);
-                    MessageManager.setValue("progress_max", quest.minParticipation);
+                        commandSender.spigot().sendMessage(tc);
+                    } else {
+                        MessageManager.setValue("progress_current", ongoingQuest.participation);
+                        MessageManager.setValue("progress_max", quest.minParticipation);
 
-                    ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
+                        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
 
-                    TextComponent tc = new TextComponent();
-                    tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_CUSTOM)).event(clickEvent).create()[0]);
-                    //MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_CUSTOM);
+                        TextComponent tc = new TextComponent();
+                        tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_CUSTOM)).event(clickEvent).create()[0]);
+                        //MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_CUSTOM);
 
-                    commandSender.spigot().sendMessage(tc);
+                        commandSender.spigot().sendMessage(tc);
+                    }
                 }
             }
         }

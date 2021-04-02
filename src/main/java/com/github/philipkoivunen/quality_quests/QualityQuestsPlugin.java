@@ -16,7 +16,7 @@ import com.github.philipkoivunen.quality_quests.commands.*;
 import com.github.philipkoivunen.quality_quests.commands.handlers.*;
 import com.github.philipkoivunen.quality_quests.constants.ConfigConstants;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
-import com.github.philipkoivunen.quality_quests.events.PlayerLogin;
+import com.github.philipkoivunen.quality_quests.events.Events;
 import com.github.philipkoivunen.quality_quests.managers.OngoingQuestManager;
 import com.github.philipkoivunen.quality_quests.managers.QuestProgressionManager;
 import com.github.philipkoivunen.quality_quests.objects.OngoingQuests;
@@ -38,7 +38,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
     private Quests quests;
     private OngoingQuests ongoingQuests;
     private OngoingQuestManager ongoingQuestManager;
-    private PlayerLogin playerLogin;
+    private Events events;
     private QuestProgressionManager questProgressionManager;
 
     @Override
@@ -47,7 +47,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
         this.storageApi = new FileApi(this);
         this.quests = new Quests();
         this.ongoingQuests = new OngoingQuests();
-        this.playerLogin = new PlayerLogin();
+        this.events = new Events();
 
         TrollskogenCorePlugin.getServerReady().waitFor(this);
         try {
@@ -62,7 +62,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
 
         this.storageApi.fetchAllQuests();
-        getServer().getPluginManager().registerEvents(this.playerLogin, this);
+        getServer().getPluginManager().registerEvents(this.events, this);
         getServer().getPluginManager().registerEvents(this.ongoingQuestManager, this);
 
         Bukkit.getPluginManager().callEvent(new PluginReadyEvent(this));

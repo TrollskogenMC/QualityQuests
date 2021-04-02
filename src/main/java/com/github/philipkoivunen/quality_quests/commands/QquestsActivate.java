@@ -32,6 +32,7 @@ public class QquestsActivate implements ICommandHandler {
         List<OngoingQuest> activeOngoingQuests = ongoingQuests.getPlayersDeactivatedQuests(user.getId());
         OngoingQuest foundOngoingQuest = null;
 
+        if(activeOngoingQuests != null && activeOngoingQuests.size() > 0) {
         for(OngoingQuest ongoingQuest : activeOngoingQuests ) {
             if(ongoingQuest.questId == quest.questId) {
                 foundOngoingQuest = ongoingQuest;
@@ -39,8 +40,9 @@ public class QquestsActivate implements ICommandHandler {
                 break;
             }
         }
+        }
 
-        if(foundOngoingQuest == null) {
+        if(foundOngoingQuest != null) {
             this.ongoingQuestManager.postOngoingQuest(user, foundOngoingQuest);
         } else {
             this.ongoingQuestManager.postOngoingQuest(user, new OngoingQuest(0, user.getId(), quest.questId, 0, true, false, quest.questName));

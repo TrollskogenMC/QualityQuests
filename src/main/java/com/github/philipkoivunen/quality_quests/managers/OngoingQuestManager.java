@@ -113,9 +113,9 @@ public class OngoingQuestManager implements Listener {
         });
     }
 
-    public void patchOngoingQuest(OngoingQuest ongoingQuest) {
+    public void patchOngoingQuest(OngoingQuest ongoingQuest, JsonObject json) {
         scheduledExecutor.submit(() -> {
-            TrollskogenCorePlugin.request("PATCH", "/ongoingquests/" + ongoingQuest.id, (Response response) -> {
+            TrollskogenCorePlugin.request("PATCH", "/ongoingquests/" + ongoingQuest.id, json,(Response response) -> {
                 Gson gson = new GsonBuilder().
                         registerTypeAdapter(OngoingQuest.class, new PatchedOngoingQuestDeserializer())
                         .create();
@@ -141,7 +141,7 @@ public class OngoingQuestManager implements Listener {
            TrollskogenCorePlugin.request("DELETE", "/ongoingquests/" + ongoingQuest.id, (Response response) -> {
               Bukkit.getScheduler().callSyncMethod(TrollskogenCorePlugin.getPlugin(), () -> {
                 if(response.getStatusCode() == 200) {
-                    ongoingQuests.deleteOngoingQuest(ongoingQuest);
+                    ongoingQuests.deleteOngoingQuest(ongoingQuest.id);
                     userToOngoingQuests.get(ongoingQuest.userId).remove(ongoingQuest);
                     if(userToOngoingQuests.get(ongoingQuest.userId).isEmpty()) {
                         userToOngoingQuests.remove(ongoingQuest.id);
