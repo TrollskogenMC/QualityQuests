@@ -27,7 +27,7 @@ public class Events implements Listener {
         LivingEntity entity = event.getEntity();
         Player player = entity.getKiller();
 
-        QualityQuestsPlugin.getInstance().getQuestProgressionManager().onKillEvent(player, entity.getType());
+         QualityQuestsPlugin.getInstance().getQuestProgressionManager().onKillEvent(player, entity.getType());
     }
 
     @EventHandler

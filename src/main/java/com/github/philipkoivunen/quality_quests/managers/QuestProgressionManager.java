@@ -30,39 +30,40 @@ public class QuestProgressionManager {
         Instant yesterDay = todaysDate.minus(1, ChronoUnit.DAYS);
 
         if(lastJoinDate.isBefore(yesterDay)) {
-            List<OngoingQuest> foundOngoingQuests = new ArrayList<>();
             List<Quest> foundQuests = qualityQuestsPlugin.getQuests().getQuestsByType(QuestTypeConstants.LOGIN.toString());
 
-            patchAndAddProgress(foundOngoingQuests, foundQuests, user);
+            patchAndAddProgress(foundQuests, user);
         }
     }
 
     public void onKillEvent(Player player, EntityType entityType) {
         UserObject user = TrollskogenCorePlugin.getUser(player);
-        List<OngoingQuest> foundOngoingQuests = new ArrayList<>();
         List<Quest> foundQuests = qualityQuestsPlugin.getQuests().getQuestsByMobToKill(entityType);
 
-        patchAndAddProgress(foundOngoingQuests, foundQuests, user);
+        patchAndAddProgress(foundQuests, user);
     }
 
 
     public void onBreakBlockEvent(Player player, Block block) {
         UserObject user = TrollskogenCorePlugin.getUser(player);
-        List<OngoingQuest> foundOngoingQuests = new ArrayList<>();
         List<Quest> foundQuests = qualityQuestsPlugin.getQuests().getQuestsByBlockToBreak(block.getType());
 
-        patchAndAddProgress(foundOngoingQuests, foundQuests, user);
+        patchAndAddProgress(foundQuests, user);
     }
 
-    private void patchAndAddProgress(List<OngoingQuest> foundOngoingQuests, List<Quest> foundQuests, UserObject user) {
-        if(foundOngoingQuests.size() > 0) {
+    private void patchAndAddProgress(List<Quest> foundQuests, UserObject user) {
+        List<OngoingQuest> foundOngoingQuests = new ArrayList<>();
+        if(foundQuests.size() > 0) {
             for(Quest q : foundQuests) {
                 List<OngoingQuest> activeQuests = qualityQuestsPlugin.getOngoingQuests().getPlayersActiveOngoingQuestsByQuestId(user.getId(), q.questId);
                 if(activeQuests.size() > 0) {
                     for(OngoingQuest o : activeQuests) {
                         o.participation = o.participation + 1;
 
-                        if(o.participation == q.minParticipation) o.isComplete = true;
+                        if(o.participation == q.minParticipation) {
+                            o.isComplete = true;
+                            o.isActive = false;
+                        }
 
                         foundOngoingQuests.add(o);
 
