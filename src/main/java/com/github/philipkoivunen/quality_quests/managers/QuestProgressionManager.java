@@ -1,12 +1,15 @@
 package com.github.philipkoivunen.quality_quests.managers;
 
+import com.github.hornta.messenger.MessageManager;
 import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 import com.github.hornta.trollskogen_core.users.UserObject;
 import com.github.philipkoivunen.quality_quests.QualityQuestsPlugin;
+import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import com.github.philipkoivunen.quality_quests.constants.QuestTypeConstants;
 import com.github.philipkoivunen.quality_quests.objects.OngoingQuest;
 import com.github.philipkoivunen.quality_quests.objects.Quest;
 import com.google.gson.JsonObject;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -27,9 +30,9 @@ public class QuestProgressionManager {
         UserObject user = TrollskogenCorePlugin.getUser(player);
         Instant lastJoinDate = user.getLastJoinDate();
         Instant todaysDate = Instant.now();
-        Instant yesterDay = todaysDate.minus(1, ChronoUnit.DAYS);
+        Instant todayZeroZero = todaysDate.truncatedTo(ChronoUnit.DAYS);
 
-        if(lastJoinDate.isBefore(yesterDay)) {
+        if(lastJoinDate.isBefore(todayZeroZero)) {
             List<Quest> foundQuests = qualityQuestsPlugin.getQuests().getQuestsByType(QuestTypeConstants.LOGIN.toString());
 
             patchAndAddProgress(foundQuests, user);
@@ -60,9 +63,30 @@ public class QuestProgressionManager {
                     for(OngoingQuest o : activeQuests) {
                         o.participation = o.participation + 1;
 
-                        if(o.participation == q.minParticipation) {
+                        if(o.participation >= q.minParticipation && o.isActive && !o.isComplete) {
                             o.isComplete = true;
                             o.isActive = false;
+
+                            if(q.commands != null && q.commands.size() > 0) {
+                                for(String command : q.commands) {
+                                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+                                }
+                            }
+
+                            MessageManager.setValue("quest_name", q.questName);
+                            MessageManager.sendMessage(user.getPlayer(), MessageConstants.QUEST_COMPLETED);
+                        } else {
+                            Instant lastInteractedDate = o.lastInteractedWidth;
+                            Instant todaysDate = Instant.now();
+                            Instant threeMinutesAfterInteract = lastInteractedDate == null ? null : lastInteractedDate.plus(3, ChronoUnit.MINUTES);
+                            if(threeMinutesAfterInteract == null || todaysDate.isAfter(threeMinutesAfterInteract)) {
+                                MessageManager.setValue("progress_current", o.participation);
+                                MessageManager.setValue("progress_max", q.minParticipation);
+                                MessageManager.setValue("quest_name", q.questName);
+                                MessageManager.sendMessage(user.getPlayer(), MessageConstants.QUEST_PROGRESSED);
+
+                                o.lastInteractedWidth = todaysDate;
+                            }
                         }
 
                         foundOngoingQuests.add(o);
@@ -77,8 +101,6 @@ public class QuestProgressionManager {
             }
         }
     }
-
-
 
     private JsonObject generateOngoingQuestJson(OngoingQuest o) {
         JsonObject json = new JsonObject();

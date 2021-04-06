@@ -68,7 +68,7 @@ public class OngoingQuests {
     }
 
     public List<OngoingQuest> getPlayersDeactivatedQuests(int playerId) {
-        List<OngoingQuest> newOngoingQuestList = null;
+        List<OngoingQuest> newOngoingQuestList = new ArrayList<>();
         for(int i = 0; i < this.ongoingQuests.size(); i++) {
             OngoingQuest o = this.ongoingQuests.get(i);
             if(o.userId == playerId && !o.isActive) {

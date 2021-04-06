@@ -2,6 +2,8 @@ package com.github.philipkoivunen.quality_quests.objects;
 
 import org.bukkit.entity.Mob;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -15,6 +17,7 @@ public class Quest {
     public String mobToKill;
     public String blockToDestroy;
     public String versionNr;
+    public ArrayList<String> commands;
 
     public Quest() {
         this.setQuestVersionNr("1");
@@ -29,12 +32,15 @@ public class Quest {
     public void setGoalType(String goalType) { this.goalType = goalType;}
     public void setMobToKill(String mob) { this.mobToKill = mob;}
     public void setBlockToDestroy(String block) { this.blockToDestroy = block;}
+    public void setCommands(ArrayList<String> commands) { this.commands = commands;}
 
     public static String getQuestName(Quest quest) {
         return quest.questName.toLowerCase(Locale.ENGLISH);
     }
-
     public static String getQuestId(Quest quest) {
         return  quest.questId.toString();
+    }
+
+    public void setCommands(List<?> list) {
     }
 }

@@ -78,8 +78,8 @@ public class QualityQuestsPlugin extends JavaPlugin {
             patch.set(ConfigConstants.LANGUAGE, "language", "english", Type.STRING);
             return patch;
         }));
-        this.configuration = cb.create();
 
+        this.configuration = cb.create();
         this.ongoingQuestManager = new OngoingQuestManager();
         this.questProgressionManager = new QuestProgressionManager(this);
     }
@@ -100,7 +100,9 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .add(MessageConstants.UPDATE_QUEST_ERROR, "update_quest_error")
                 .add(MessageConstants.UPDATE_QUEST_SUCCESS, "update_quest_success")
                 .add(MessageConstants.START_QUEST_SUCCESS, "start_quest_success")
-                .add(MessageConstants.START_QUEST_FAILURE, "start_quest_failurew")
+                .add(MessageConstants.START_QUEST_FAILURE, "start_quest_failure")
+                .add(MessageConstants.QUEST_COMPLETED, "quest_completed")
+                .add(MessageConstants.QUEST_PROGRESSED, "quest_progressed")
                 .build();
 
         translations = new Translations(this, messageManager);

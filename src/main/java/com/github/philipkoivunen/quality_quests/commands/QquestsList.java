@@ -47,36 +47,36 @@ public class QquestsList implements ICommandHandler {
                         MessageManager.setValue("progress_current", ongoingQuest.participation);
                         MessageManager.setValue("progress_max", quest.minParticipation);
                         MessageManager.setValue("mob", quest.mobToKill);
-                        //MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_KILL);
+                        MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_KILL);
 
-                        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
+                        //ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
 
-                        TextComponent tc = new TextComponent();
-                        tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_KILL)).event(clickEvent).create()[0]);
+                       // TextComponent tc = new TextComponent();
+                       // tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_KILL)).event(clickEvent).create()[0]);
 
-                        commandSender.spigot().sendMessage(tc);
+                       // commandSender.spigot().sendMessage(tc);
                     } else if (quest.goalType.equals("break_block")) {
                         MessageManager.setValue("progress_current", ongoingQuest.participation);
                         MessageManager.setValue("progress_max", quest.minParticipation);
                         MessageManager.setValue("block", quest.blockToDestroy);
-                        //MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_BREAK);
+                        MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_BREAK);
 
-                        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
-                        TextComponent tc = new TextComponent();
-                        tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_BREAK)).event(clickEvent).create()[0]);
+                        //ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
+                        //TextComponent tc = new TextComponent();
+                        //tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_BREAK)).event(clickEvent).create()[0]);
 
-                        commandSender.spigot().sendMessage(tc);
+                        //commandSender.spigot().sendMessage(tc);
                     } else {
                         MessageManager.setValue("progress_current", ongoingQuest.participation);
                         MessageManager.setValue("progress_max", quest.minParticipation);
 
-                        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
+                        //ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/qquests activate " + quest.questId);
 
-                        TextComponent tc = new TextComponent();
-                        tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_CUSTOM)).event(clickEvent).create()[0]);
-                        //MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_CUSTOM);
+                        //TextComponent tc = new TextComponent();
+                        //tc.addExtra(new ComponentBuilder(MessageManager.getMessage(MessageConstants.LIST_QUEST_CUSTOM)).event(clickEvent).create()[0]);
+                        MessageManager.sendMessage(commandSender, MessageConstants.LIST_QUEST_CUSTOM);
 
-                        commandSender.spigot().sendMessage(tc);
+                        //commandSender.spigot().sendMessage(tc);
                     }
                 }
             }

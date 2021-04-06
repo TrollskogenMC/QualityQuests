@@ -11,10 +11,7 @@ import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -30,6 +27,10 @@ public class QuestFile {
     private static final String GOAL_MOB = "goal_mob";
     private static final String GOAL_BLOCK = "goal_block";
     private static final String TYPE = "type";
+    private static final String VERSION = "version";
+    private static final String COMMANDS_COMPLETE = "commands_complete";
+    private static final String CURRENT_VERSION = "1";
+
     private File directory;
 
     public QuestFile(Plugin plugin) {
@@ -55,6 +56,12 @@ public class QuestFile {
             yaml.set(QUEST_NAME, quest.questName);
             yaml.set(GOAL_OBJECT, goalList);
             yaml.set(TYPE, quest.type);
+            yaml.set(VERSION, CURRENT_VERSION);
+
+            // We do not want to edit this field just initiate it
+            if(quest.commands == null || quest.commands.size() < 1) {
+                yaml.set(COMMANDS_COMPLETE, new ArrayList<String>());
+            }
 
             try{
                 yaml.save(questFile);

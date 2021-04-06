@@ -84,7 +84,7 @@ public class Quests {
         List<Quest> foundQuests = new ArrayList<>();
         for (int i = 0; i < this.quests.size(); i++) {
             Quest q = this.quests.get(i);
-            if (q.goalType.toLowerCase().equals(QuestTypeConstants.KILL.toString().toLowerCase()) && entityType.name().toLowerCase().equals(q.mobToKill.toLowerCase())) foundQuests.add(q);
+            if (q.mobToKill != null && q.goalType.toLowerCase().equals(QuestTypeConstants.KILL.toString().toLowerCase()) && entityType.name().toLowerCase().equals(q.mobToKill.toLowerCase())) foundQuests.add(q);
         }
         return foundQuests;
     }
@@ -95,7 +95,7 @@ public class Quests {
             String questTypeConstant = QuestTypeConstants.BREAK_BLOCK.toString().toLowerCase();
 
             Quest q = this.quests.get(i);
-            if (q.goalType.equals(questTypeConstant)) {
+            if (q.goalType.equals(questTypeConstant) && q.blockToDestroy != null) {
                 String materialName = material.name().toLowerCase();
                 String goalType = q.blockToDestroy.toLowerCase();
                 if (materialName.equals(goalType)) foundQuests.add(q);

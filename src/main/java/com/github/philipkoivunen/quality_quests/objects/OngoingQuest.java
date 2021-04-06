@@ -1,5 +1,6 @@
 package com.github.philipkoivunen.quality_quests.objects;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class OngoingQuest {
@@ -10,6 +11,7 @@ public class OngoingQuest {
     public boolean isActive;
     public boolean isComplete;
     public String name;
+    public Instant lastInteractedWidth;
 
     public OngoingQuest(int id, int userId, UUID questId, int participation, boolean isActive, Boolean isComplete, String name) {
         this.id = id;

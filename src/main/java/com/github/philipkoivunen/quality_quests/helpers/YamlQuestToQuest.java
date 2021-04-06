@@ -16,6 +16,7 @@ public class YamlQuestToQuest {
     private static final String GOAL_MOB = "goal_mob";
     private static final String GOAL_BLOCK = "goal_block";
     private static final String TYPE = "type";
+    private static final String COMMANDS_COMPLETE = "commands_complete";
 
 
     public static Quest Convert(YamlConfiguration yamlData) {
@@ -31,6 +32,7 @@ public class YamlQuestToQuest {
         quest.setType(yamlData.getString(TYPE));
         quest.setQuestId(UUID.fromString(yamlData.getString(QUEST_ID)));
 
+        quest.setCommands(yamlData.getList(COMMANDS_COMPLETE));
         quest.setQuestName(yamlData.getString(QUEST_NAME));
 
         return quest;

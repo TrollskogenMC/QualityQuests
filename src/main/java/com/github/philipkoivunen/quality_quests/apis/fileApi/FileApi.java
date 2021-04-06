@@ -19,40 +19,5 @@ public class FileApi extends StorageApi {
     }
 
     @Override
-    public void deleteQuest(Quest quest) {
-        questFile.deleteQuest(quest);
-    }
-
-    @Override
-    public void fetchQuest(Quest quest) {
-        questFile.fetchQuest(quest);
-    }
-
-    @Override
     public void fetchAllQuests() { questFile.fetchAllQuests(); }
-
-    @Override
-    public void fetchPlayer(QuestPlayer player) {
-
-    }
-
-    @Override
-    public void updatePlayer(QuestPlayer player) {
-
-    }
-
-    @Override
-    public void updateOngoingQuest(OngoingQuest ongoingQuest) {
-
-    }
-
-    @Override
-    public void fetchOngoingQuest(OngoingQuest ongoingQuest) {
-
-    }
-
-    @Override
-    public void deleteOngoingQuest(OngoingQuest ongoingQuest) {
-
-    }
 }
