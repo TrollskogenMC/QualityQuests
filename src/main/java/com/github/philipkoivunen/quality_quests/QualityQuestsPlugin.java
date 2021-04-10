@@ -1,6 +1,7 @@
 package com.github.philipkoivunen.quality_quests;
 
 import com.github.hornta.commando.CarbonArgument;
+import com.github.hornta.commando.CarbonArgumentType;
 import com.github.hornta.commando.CarbonCommand;
 import com.github.hornta.commando.Commando;
 import com.github.hornta.messenger.MessageManager;
@@ -20,10 +21,12 @@ import com.github.philipkoivunen.quality_quests.events.Events;
 import com.github.philipkoivunen.quality_quests.managers.OngoingQuestManager;
 import com.github.philipkoivunen.quality_quests.managers.QuestProgressionManager;
 import com.github.philipkoivunen.quality_quests.objects.OngoingQuests;
+import com.github.philipkoivunen.quality_quests.objects.Playlists;
 import com.github.philipkoivunen.quality_quests.objects.Quests;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -38,6 +41,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
     private Quests quests;
     private OngoingQuests ongoingQuests;
     private OngoingQuestManager ongoingQuestManager;
+    private Playlists playLists;
     private Events events;
     private QuestProgressionManager questProgressionManager;
 
@@ -47,6 +51,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
         this.storageApi = new FileApi(this);
         this.quests = new Quests();
         this.ongoingQuests = new OngoingQuests();
+        this.playLists = new Playlists();
         this.events = new Events();
 
         TrollskogenCorePlugin.getServerReady().waitFor(this);
@@ -62,6 +67,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
 
         this.storageApi.fetchAllQuests();
+        this.storageApi.fetchAllPlaylists();
         getServer().getPluginManager().registerEvents(this.events, this);
         getServer().getPluginManager().registerEvents(this.ongoingQuestManager, this);
 
@@ -103,6 +109,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .add(MessageConstants.START_QUEST_FAILURE, "start_quest_failure")
                 .add(MessageConstants.QUEST_COMPLETED, "quest_completed")
                 .add(MessageConstants.QUEST_PROGRESSED, "quest_progressed")
+                .add(MessageConstants.CREATE_PLAYLIST_SUCCESS, "create_playlist_success")
                 .build();
 
         translations = new Translations(this, messageManager);
@@ -123,12 +130,11 @@ public class QualityQuestsPlugin extends JavaPlugin {
         this.commando
                 .addCommand("qquests reload")
                 .withHandler(new QquestReload())
-                .requiresPermission("qquests.reload");
+                .requiresPermission("qquests.admin");
 
         this.commando
                 .addCommand("qquests list")
-                .withHandler(new QquestsList())
-                .requiresPermission("qquests.list");
+                .withHandler(new QquestsList());
 
         this.commando
                 .addCommand("qquests setMob")
@@ -143,7 +149,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                                 .setHandler(new QuestMobHandler())
                                 .create()
                 )
-                .requiresPermission("qquests.setMob");
+                .requiresPermission("qquests.admin");
 
         this.commando
                 .addCommand("qquests setBlock")
@@ -158,7 +164,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                         .setHandler(new QuestBlockHandler())
                         .create()
         )
-                .requiresPermission("qquests.setBlock");
+                .requiresPermission("qquests.admin");
 
         this.commando
             .addCommand("qquests createQuest")
@@ -179,7 +185,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                             .setHandler(new QuestGoalCompleteParticipationHandler())
                             .create()
             )
-            .requiresPermission("qquests.create");
+            .requiresPermission("qquests.admin");
 
         this.commando
             .addCommand("qquests activate")
@@ -189,7 +195,14 @@ public class QualityQuestsPlugin extends JavaPlugin {
                             .setHandler(new QuestIdHandler())
                             .create()
             )
-            .requiresPermission("qquests.activate");
+            .withArgument(
+                    new CarbonArgument.Builder("player")
+                            .setType(CarbonArgumentType.ONLINE_PLAYER)
+                            .setDefaultValue(Player.class, (CommandSender sender, String[] prevArgs) -> sender.getName())
+                            .requiresPermission("qquests.admin")
+                            .create()
+            )
+            .requiresPermission("qquests.admin");
 
         this.commando
                 .addCommand("qquests deactivate")
@@ -199,7 +212,64 @@ public class QualityQuestsPlugin extends JavaPlugin {
                                 .setHandler(new QuestIdHandler())
                                 .create()
                 )
-                .requiresPermission("qquests.deactivate");
+                .requiresPermission("qquests.admin");
+
+        this.commando
+                .addCommand("qquests playlist create")
+                .withHandler(new QquestCreatePlaylist(this.getStorageApi(), this.getPlayLists()))
+                .withArgument(
+                        new CarbonArgument.Builder("name")
+                                .setHandler(new QquestPlaylistName())
+                                .create()
+                )
+                .requiresPermission("qquests.admin");
+
+        this.commando
+                .addCommand("qquests playlist add quest")
+                .withHandler(new QquestPlaylistAddQuest(this.getStorageApi(), this.getPlayLists()))
+                .withArgument(
+                        new CarbonArgument.Builder("playListId")
+                                .setHandler(new PlaylistId())
+                                .create()
+                )
+                .withArgument(
+                        new CarbonArgument.Builder("questId")
+                                .setHandler(new QuestIdHandler())
+                                .create()
+                )
+                .requiresPermission("qquests.admin");
+
+        this.commando
+                .addCommand("qquests playlist activate random")
+                .withHandler(new QquestPlaylistActivateRandom(this.getStorageApi(), this.getPlayLists(), this.getQuests(), this.getOngoingQuests(), getOngoingQuestManager()))
+                .withArgument(
+                        new CarbonArgument.Builder("playListId")
+                                .setHandler(new PlaylistId())
+                                .create()
+                )
+                .withArgument(
+                        new CarbonArgument.Builder("player")
+                                .setType(CarbonArgumentType.ONLINE_PLAYER)
+                                .setDefaultValue(Player.class, (CommandSender sender, String[] prevArgs) -> sender.getName())
+                                .requiresPermission("qquests.admin")
+                                .create()
+                )
+                .requiresPermission("qquests.admin");
+
+        this.commando
+                .addCommand("qquests playlist set daysToComplete")
+                .withHandler(new QquestPlaylistAddQuest(this.getStorageApi(), this.getPlayLists()))
+                .withArgument(
+                        new CarbonArgument.Builder("playListId")
+                                .setHandler(new PlaylistId())
+                                .create()
+                )
+                .withArgument(
+                        new CarbonArgument.Builder("daysToComplete")
+                                .setHandler(new DaysToCompleteHandler())
+                                .create()
+                )
+                .requiresPermission("qquests.admin");
     }
 
     @Override
@@ -223,4 +293,5 @@ public class QualityQuestsPlugin extends JavaPlugin {
     }
     public QuestProgressionManager getQuestProgressionManager() { return this.questProgressionManager;}
     public OngoingQuestManager getOngoingQuestManager() { return this.ongoingQuestManager;}
+    public Playlists getPlayLists() { return this.playLists;}
 }

@@ -42,5 +42,6 @@ public class Quest {
     }
 
     public void setCommands(List<?> list) {
+
     }
 }

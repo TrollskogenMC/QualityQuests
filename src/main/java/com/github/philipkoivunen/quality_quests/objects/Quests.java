@@ -19,10 +19,11 @@ public class Quests {
     }
 
     public void addQuest(Quest quest) {
-        Boolean hasFound = false;
         if(quests.size() < 1) {
             quests.add(quest);
         } else {
+            Boolean hasFound = false;
+
             for (Quest q : quests) {
                 if (q.questId == quest.questId) hasFound = true;
             }

@@ -22,6 +22,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -47,19 +48,20 @@ public class OngoingQuestManager implements Listener {
             json.get("participation").getAsInt(),
             json.get("is_active").getAsBoolean(),
             json.get("is_complete").getAsBoolean(),
-            json.get("name").getAsString()
+            json.get("name").getAsString(),
+            Instant.parse(json.get("activated_on").getAsString())
         );
     }
 
     public void postOngoingQuest(UserObject userObject, OngoingQuest ongoingQuest) {
         JsonObject json = new JsonObject();
-        //json.addProperty("id", ongoingQuest.id);
         json.addProperty("quest_id", ongoingQuest.questId.toString());
         json.addProperty("user_id", ongoingQuest.userId);
         json.addProperty("is_active", ongoingQuest.isActive);
         json.addProperty("is_complete", ongoingQuest.isComplete);
         json.addProperty("participation", ongoingQuest.participation);
         json.addProperty("name", ongoingQuest.name);
+        json.addProperty("activated_on", ongoingQuest.activatedOn.toString());
 
         scheduledExecutor.submit(() -> {
             TrollskogenCorePlugin.request("POST", "/ongoingquests", json, (Response response) -> {

@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class QuestProgressionManager {
@@ -31,6 +32,7 @@ public class QuestProgressionManager {
         Instant lastJoinDate = user.getLastJoinDate();
         Instant todaysDate = Instant.now();
         Instant todayZeroZero = todaysDate.truncatedTo(ChronoUnit.DAYS);
+        // TODO: Kolla mot playList om det finns utgångna quests och ta bort de isåfall och meddela användaren om det
 
         if(lastJoinDate.isBefore(todayZeroZero)) {
             List<Quest> foundQuests = qualityQuestsPlugin.getQuests().getQuestsByType(QuestTypeConstants.LOGIN.toString());
@@ -40,6 +42,8 @@ public class QuestProgressionManager {
     }
 
     public void onKillEvent(Player player, EntityType entityType) {
+        // TODO: Kolla mot playList om det finns utgångna quests och ta bort de isåfall och meddela användaren om det
+
         UserObject user = TrollskogenCorePlugin.getUser(player);
         List<Quest> foundQuests = qualityQuestsPlugin.getQuests().getQuestsByMobToKill(entityType);
 
@@ -48,6 +52,8 @@ public class QuestProgressionManager {
 
 
     public void onBreakBlockEvent(Player player, Block block) {
+        // TODO: Kolla mot playList om det finns utgångna quests och ta bort de isåfall och meddela användaren om det
+
         UserObject user = TrollskogenCorePlugin.getUser(player);
         List<Quest> foundQuests = qualityQuestsPlugin.getQuests().getQuestsByBlockToBreak(block.getType());
 
@@ -111,6 +117,7 @@ public class QuestProgressionManager {
         json.addProperty("is_complete", o.isComplete);
         json.addProperty("participation", o.participation);
         json.addProperty("name", o.name);
+        json.addProperty("activated_on", Instant.now().toString());
         return json;
     }
 
