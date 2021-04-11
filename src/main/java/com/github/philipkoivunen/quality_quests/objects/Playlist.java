@@ -76,4 +76,8 @@ public class Playlist {
     public static String getId(Playlist playlist) {
         return  playlist.id.toString();
     }
+
+    public static String getName(Playlist playlist) {
+        return playlist.playListName.toString();
+    }
 }

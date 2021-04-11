@@ -110,6 +110,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .add(MessageConstants.QUEST_COMPLETED, "quest_completed")
                 .add(MessageConstants.QUEST_PROGRESSED, "quest_progressed")
                 .add(MessageConstants.CREATE_PLAYLIST_SUCCESS, "create_playlist_success")
+                .add(MessageConstants.UPDATE_PLAYLIST_SUCCESS, "update_playlist_success")
                 .build();
 
         translations = new Translations(this, messageManager);
@@ -226,15 +227,15 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
         this.commando
                 .addCommand("qquests playlist add quest")
-                .withHandler(new QquestPlaylistAddQuest(this.getStorageApi(), this.getPlayLists()))
+                .withHandler(new QquestPlaylistAddQuest(this.getStorageApi(), this.getPlayLists(), this.getQuests()))
                 .withArgument(
                         new CarbonArgument.Builder("playListId")
-                                .setHandler(new PlaylistId())
+                                .setHandler(new PlayListHandler(this.getPlayLists()))
                                 .create()
                 )
                 .withArgument(
                         new CarbonArgument.Builder("questId")
-                                .setHandler(new QuestIdHandler())
+                                .setHandler(new QuestHandler())
                                 .create()
                 )
                 .requiresPermission("qquests.admin");
@@ -258,7 +259,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
         this.commando
                 .addCommand("qquests playlist set daysToComplete")
-                .withHandler(new QquestPlaylistAddQuest(this.getStorageApi(), this.getPlayLists()))
+                .withHandler(new PlaylistDaysSet(this.getStorageApi(), this.getPlayLists()))
                 .withArgument(
                         new CarbonArgument.Builder("playListId")
                                 .setHandler(new PlaylistId())

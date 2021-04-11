@@ -11,6 +11,7 @@ import com.github.philipkoivunen.quality_quests.objects.Quests;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,7 +44,7 @@ public class QquestsDeActivate implements ICommandHandler {
         if(foundOngoingQuest == null) {
             this.ongoingQuestManager.postOngoingQuest(user, foundOngoingQuest);
         } else {
-            this.ongoingQuestManager.postOngoingQuest(user, new OngoingQuest(0, user.getId(), quest.questId, 0, false, false, quest.questName));
+            this.ongoingQuestManager.postOngoingQuest(user, new OngoingQuest(0, user.getId(), quest.questId, 0, false, false, quest.questName, Instant.now()));
         }
     }
 }

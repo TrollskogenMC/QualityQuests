@@ -8,13 +8,13 @@ public class Playlists {
     private List<Playlist> playlists;
 
     public Playlists() {
-        this.playlists = new ArrayList<Playlist>();
+        this.playlists = new ArrayList<>();
     }
 
     public void delete(Playlist playList) {
-        List<Playlist> newPlayListList = null;
+        List<Playlist> newPlayListList = new ArrayList<>();
         for (Playlist pl : playlists) {
-            if(!pl.id.equals(playList.id)) {
+            if(pl.id.equals(playList.id) == false) {
                 newPlayListList.add(pl);
             }
         }
@@ -27,28 +27,24 @@ public class Playlists {
     }
 
     public void addPlayList(Playlist playList) {
-        if(playlists.size() < 1) {
-            playlists.add(playList);
+        if(this.playlists == null || this.playlists.size() < 1) {
+            this.playlists.add(playList);
         } else {
             Boolean hasFound = false;
 
-            for(Playlist pl : playlists) {
+            for(Playlist pl : this.playlists) {
                 if (pl.id.equals(playList.id)) {
                     hasFound = true;
                 }
             }
 
             if (!hasFound) {
-                playlists.add(playList);
+                this.playlists.add(playList);
             } else {
-                delete(playList);
-                playlists.add(playList);
+                this.delete(playList);
+                this.playlists.add(playList);
             }
         }
-    }
-
-    public void removePlayList(Playlist playList) {
-
     }
 
     public Playlist getPlayListByUUID(UUID uuid) {
@@ -61,5 +57,13 @@ public class Playlists {
 
     public List<Playlist> getplaylists() {
         return this.playlists;
+    }
+
+    public Playlist getPlayListByName(String playListName) {
+        Playlist playlist = null;
+        for(Playlist p: playlists) {
+            if(p.playListName.equals(playListName)) playlist = p;
+        }
+        return playlist;
     }
 }

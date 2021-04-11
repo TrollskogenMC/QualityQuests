@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +53,7 @@ public class QquestsActivate implements ICommandHandler {
         if(foundOngoingQuest != null) {
             this.ongoingQuestManager.postOngoingQuest(user, foundOngoingQuest);
         } else {
-            this.ongoingQuestManager.postOngoingQuest(user, new OngoingQuest(0, user.getId(), quest.questId, 0, true, false, quest.questName));
+            this.ongoingQuestManager.postOngoingQuest(user, new OngoingQuest(0, user.getId(), quest.questId, 0, true, false, quest.questName, Instant.now()));
         }
     }
 }

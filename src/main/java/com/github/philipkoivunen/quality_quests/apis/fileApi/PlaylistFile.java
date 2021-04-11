@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class PlaylistFile {
     private File directory;
@@ -32,12 +33,16 @@ public class PlaylistFile {
 
     public void updatePlaylist(Playlist playlist) {
         File playListFile = new File(directory, playlist.id.toString() + ".yml");
+        List<String> questIds = playlist.questIds.stream()
+                                .map(s -> s.toString())
+                                .collect(Collectors.toList());
+
         CompletableFuture.supplyAsync(() -> {
             YamlConfiguration yaml = new YamlConfiguration();
             yaml.set(VERSION, playlist.versionNumber);
-            yaml.set(ID, playlist.id);
+            yaml.set(ID, playlist.id.toString());
             yaml.set(PLAYLIST_NAME, playlist.playListName);
-            yaml.set(QUEST_IDS, playlist.questIds);
+            yaml.set(QUEST_IDS, questIds);
             yaml.set(DAYS_TO_COMPLETE, playlist.daysToComplete);
             try{
                 yaml.save(playListFile);

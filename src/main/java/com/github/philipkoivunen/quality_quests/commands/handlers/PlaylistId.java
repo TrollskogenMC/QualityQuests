@@ -22,14 +22,14 @@ public class PlaylistId implements IArgumentHandler {
         this.pluginInstanse = QualityQuestsPlugin.getInstance();
         this.playlists = pluginInstanse.getPlayLists();
     }
+
     @Override
     public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
         return this.playlists.getplaylists()
                 .stream()
-                .filter(playlist -> playlist.playListName.startsWith(argument.toLowerCase(Locale.ENGLISH)))
+                .filter(playlist -> playlist.id.toString().startsWith(argument.toLowerCase(Locale.ENGLISH)))
                 .map(Playlist::getId)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
-
     }
 
     @Override

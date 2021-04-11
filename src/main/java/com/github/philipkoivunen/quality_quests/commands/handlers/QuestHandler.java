@@ -22,8 +22,7 @@ public class QuestHandler implements IArgumentHandler {
 
     @Override
     public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-
-        return quests.getQuests()
+        return this.quests.getQuests()
                 .stream()
                 .filter(quest -> quest.questName.toLowerCase(Locale.ENGLISH).startsWith(argument.toLowerCase(Locale.ENGLISH)))
                 .map(Quest::getQuestName)
@@ -37,6 +36,6 @@ public class QuestHandler implements IArgumentHandler {
 
     @Override
     public void whenInvalid(ValidationResult result) {
-        MessageManager.sendMessage(result.getCommandSender(), MessageConstants.SET_MOB_FAILURE_PARAM);
+        MessageManager.sendMessage(result.getCommandSender(), MessageConstants.CREATE_QUEST_FAILED_PARAM);
     }
 }
