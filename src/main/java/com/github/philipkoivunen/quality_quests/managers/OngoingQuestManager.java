@@ -195,6 +195,7 @@ public class OngoingQuestManager implements Listener {
                 Bukkit.getScheduler().callSyncMethod(TrollskogenCorePlugin.getPlugin(), () -> {
                     this.ongoingQuests.deleteOngoingQuest(ongoingQuest.id);
                     this.deleteOngoingQuest(ongoingQuest);
+                    this.qualityQuestsPlugin.getQuestProgressionManager().addNewQuests(TrollskogenCorePlugin.getUser(ongoingQuest.userId));
                     return null;
                 });
             }

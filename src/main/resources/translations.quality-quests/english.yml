@@ -19,3 +19,4 @@ quest_progressed: "§eDu gjorde framsteg i <quest_name> (<progress_current>/<pro
 create_playlist_success: "§ePlaylist created successfully!"
 update_playlist_success: "§ePlaylist updated successfully!"
 ended_quest: "§e<quest_name> was past it's due date and was removed."
+new_quests: "§eYou have new quests! Find out more about them /quests list"

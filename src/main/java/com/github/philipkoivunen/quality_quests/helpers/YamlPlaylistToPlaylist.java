@@ -29,7 +29,7 @@ public class YamlPlaylistToPlaylist {
             questIds.add(UUID.fromString(qId));
         }
 
-        playlist.setAmountToGenerate(yamlData.getInt(DAYS_TO_COMPLETE));
+        playlist.setDaysToComplete(yamlData.getInt(DAYS_TO_COMPLETE));
         playlist.setAmountToGenerate(yamlData.getInt(NUM_TO_GENERATE));
         playlist.setPlayListName(yamlData.getString(PLAYLIST_NAME));
         playlist.setQuestIds(questIds);

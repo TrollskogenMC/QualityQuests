@@ -38,10 +38,14 @@ public class Quest {
         return quest.questName.toLowerCase(Locale.ENGLISH);
     }
     public static String getQuestId(Quest quest) {
-        return  quest.questId.toString();
+        return quest.questId.toString();
     }
 
     public void setCommands(List<?> list) {
-
+        ArrayList<String> commandList = new ArrayList<>();
+        for(Object o : list) {
+            commandList.add(o.toString());
+        }
+        this.commands = commandList;
     }
 }

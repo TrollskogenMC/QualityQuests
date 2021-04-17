@@ -19,3 +19,4 @@ quest_progressed: "§eDu gjorde framsteg i <quest_name> (<progress_current>/<pro
 create_playlist_success: "§eSpellistan skapades!"
 update_playlist_success: "§eSpellistan uppdaterades!"
 ended_quest: "§e<quest_name> har gått ut och därför togs den bort."
+new_quests: "§eDu har nya quests! Läs mer om med /quests list"

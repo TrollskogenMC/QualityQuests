@@ -37,31 +37,47 @@ public class QuestProgressionManager {
             Instant lastJoinDate = user.getLastJoinDate();
             Instant todaysDate = Instant.now();
             Instant todayZeroZero = todaysDate.truncatedTo(ChronoUnit.DAYS);
-            this.addNewQuests(user);
 
             if (lastJoinDate.isBefore(todayZeroZero)) {
                 List<Quest> foundQuests = qualityQuestsPlugin.getQuests().getQuestsByType(QuestTypeConstants.LOGIN.toString());
+                this.addNewQuests(user);
 
                 if(foundQuests.size() == 0) patchAndAddProgress(foundQuests, user);
             }
         }
     }
 
-    private void addNewQuests(UserObject user) {
+    public void addNewQuests(UserObject user) {
         List<Playlist> foundPlayLists = qualityQuestsPlugin.getPlayLists().getPlayListsCanBeActivated();
+        Boolean hasGenerated = false;
 
-        for(Playlist playlist : foundPlayLists) {
+        for (Playlist playlist : foundPlayLists) {
             Boolean hasAnyQuestFromPlayList = false;
-            for(UUID qustId : playlist.questIds) {
-                List<OngoingQuest> activeOngoingQuests = this.ongoingQuests.getPlayersActiveOngoingQuestsByQuestId(user.getId(), qustId);
-                if(activeOngoingQuests.size() > 0) hasAnyQuestFromPlayList = true;
+            int playlistNumToGenerate = playlist.amountToGenerate;
+            int amountOfFoundQuests = 0;
+
+            for (UUID questId : playlist.questIds) {
+                List<OngoingQuest> activeOngoingQuests = this.ongoingQuests.getPlayersActiveExpiringOngoingQuestsByQuestId(user.getId(), questId);
+                if (activeOngoingQuests.size() > 0) {
+                    hasAnyQuestFromPlayList = true;
+                    amountOfFoundQuests = amountOfFoundQuests + activeOngoingQuests.size();
+                }
             }
-            if(!hasAnyQuestFromPlayList) generateQuest(playlist, user);
+
+            int numToGenerate = playlistNumToGenerate - amountOfFoundQuests;
+            if (!hasAnyQuestFromPlayList && numToGenerate > 0) {
+                generateQuest(numToGenerate, user, playlist);
+                hasGenerated = true;
+            }
+        }
+
+        if (hasGenerated) {
+            MessageManager.sendMessage(user.getPlayer(), MessageConstants.NEW_QUESTS);
         }
     }
 
-    public void generateQuest(Playlist playlist, UserObject user) {
-        for(int i = 0; i < playlist.amountToGenerate; i++) {
+    public void generateQuest(int numToGenerate, UserObject user, Playlist playlist) {
+        for(int i = 0; i < numToGenerate; i++) {
             Instant todaysDate = Instant.now();
             Instant expirationDate = playlist.daysToComplete != null ? todaysDate.plus(playlist.daysToComplete, ChronoUnit.DAYS) : null;
             Quest quest = this.quests.getQuestByUUID(playlist.getRandomQuestId());

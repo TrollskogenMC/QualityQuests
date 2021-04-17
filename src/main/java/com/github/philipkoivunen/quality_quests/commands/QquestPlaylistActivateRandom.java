@@ -6,6 +6,7 @@ import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 import com.github.hornta.trollskogen_core.users.UserObject;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
+import com.github.philipkoivunen.quality_quests.constants.QuestTypeConstants;
 import com.github.philipkoivunen.quality_quests.managers.OngoingQuestManager;
 import com.github.philipkoivunen.quality_quests.objects.*;
 import org.bukkit.Bukkit;
@@ -71,8 +72,8 @@ public class QquestPlaylistActivateRandom implements ICommandHandler {
 
         MessageManager.setValue("quest_name", quest.questName);
         MessageManager.setValue("progress_max", quest.minParticipation);
-        if(quest.goalType == "break_block") MessageManager.setValue("goal", quest.blockToDestroy);
-        else if(quest.goalType == "kill") MessageManager.setValue("goal", quest.mobToKill);
+        if(quest.goalType == QuestTypeConstants.BREAK_BLOCK.toString().toLowerCase()) MessageManager.setValue("goal", quest.blockToDestroy);
+        else if(quest.goalType == QuestTypeConstants.KILL.toString().toLowerCase()) MessageManager.setValue("goal", quest.mobToKill);
 
         MessageManager.sendMessage(commandSender, MessageConstants.START_QUEST_SUCCESS);
     }

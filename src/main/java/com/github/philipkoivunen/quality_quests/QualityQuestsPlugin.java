@@ -113,6 +113,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .add(MessageConstants.CREATE_PLAYLIST_SUCCESS, "create_playlist_success")
                 .add(MessageConstants.UPDATE_PLAYLIST_SUCCESS, "update_playlist_success")
                 .add(MessageConstants.ENDED_QUEST, "ended_quest")
+                .add(MessageConstants.NEW_QUESTS, "new_quests")
                 .build();
 
         translations = new Translations(this, messageManager);

@@ -69,6 +69,18 @@ public class OngoingQuests {
         return activeOngoingQuestList;
     }
 
+    public List<OngoingQuest> getPlayersActiveExpiringOngoingQuestsByQuestId(int playerId, UUID questId) {
+        List<OngoingQuest> activeOngoingQuestList = new ArrayList<>();
+        for(int i = 0; i < this.ongoingQuests.size(); i++) {
+            OngoingQuest o = this.ongoingQuests.get(i);
+            if(o.userId == playerId && o.isActive && o.questId.equals(questId) && o.expiresOn != null ) {
+                activeOngoingQuestList.add(o);
+            }
+        }
+
+        return activeOngoingQuestList;
+    }
+
     public List<OngoingQuest> getPlayersDeactivatedQuests(int playerId) {
         List<OngoingQuest> newOngoingQuestList = new ArrayList<>();
         for(int i = 0; i < this.ongoingQuests.size(); i++) {

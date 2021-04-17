@@ -71,7 +71,7 @@ public class Playlists {
         List<Playlist> newPlayLists = new ArrayList<>();
 
         for (Playlist playlist : this.playlists) {
-            if(playlist.amountToGenerate > 0) {
+            if(playlist.amountToGenerate > 0 && playlist.activateOnFirstLogin) {
                 newPlayLists.add(playlist);
             }
         }

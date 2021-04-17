@@ -23,5 +23,6 @@ public enum MessageConstants {
     QUEST_PROGRESSED,
     CREATE_PLAYLIST_SUCCESS,
     UPDATE_PLAYLIST_SUCCESS,
-    ENDED_QUEST;
+    ENDED_QUEST,
+    NEW_QUESTS;
 }
