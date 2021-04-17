@@ -26,6 +26,8 @@ public class PlaylistFile {
     private static final String VERSION = "version";
     private static final String PLAYLIST_NAME = "name";
     private static final String DAYS_TO_COMPLETE = "daysToComplete";
+    private static final String NUM_TO_GENERATE = "numToGenerate";
+    private static final String ACTIVATE_ON_FIRST_LOGIN = "activateOnFirstLogin";
 
     public PlaylistFile(Plugin plugin) {
         directory = new File(plugin.getDataFolder(), PLAYLIST_DIRECTORY);
@@ -44,6 +46,8 @@ public class PlaylistFile {
             yaml.set(PLAYLIST_NAME, playlist.playListName);
             yaml.set(QUEST_IDS, questIds);
             yaml.set(DAYS_TO_COMPLETE, playlist.daysToComplete);
+            yaml.set(NUM_TO_GENERATE, playlist.amountToGenerate);
+            yaml.set(ACTIVATE_ON_FIRST_LOGIN, playlist.activateOnFirstLogin);
             try{
                 yaml.save(playListFile);
             }catch (IOException ex) {

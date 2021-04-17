@@ -13,19 +13,28 @@ public class Playlist {
     public String playListName;
     public UUID id;
     public Integer daysToComplete;
+    public Boolean activateOnFirstLogin;
+    public Integer amountToGenerate;
 
     public Playlist() {
         this.versionNumber = "1";
         this.questIds = new ArrayList<>();
         this.id = UUID.randomUUID();
+        this.amountToGenerate = 0;
+        this.activateOnFirstLogin = false;
     }
 
     public void setPlayListName(String name) {
         this.playListName = name;
     }
-
     public void setQuestIds(List<UUID> newQuestIds) {
-        questIds = newQuestIds;
+        this.questIds = newQuestIds;
+    }
+    public void setAmountToGenerate(Integer integer) {
+        this.amountToGenerate = integer;
+    }
+    public void setActivateOnFirstLogin(Boolean bool) {
+        this.activateOnFirstLogin = bool;
     }
 
     public void addQuestId(UUID questId) {
@@ -57,7 +66,7 @@ public class Playlist {
 
     public UUID getRandomQuestId() {
         int questSize = questIds.size();
-        int randomNumber = ThreadLocalRandom.current().nextInt(0,questSize + 1);
+        int randomNumber = ThreadLocalRandom.current().nextInt(0,questSize);
 
         return questIds.get(randomNumber);
     }

@@ -13,9 +13,10 @@ public class OngoingQuest {
     public String name;
     public Instant lastInteractedWidth;
     public Instant activatedOn;
+    public Instant expiresOn;
 
 
-    public OngoingQuest(int id, int userId, UUID questId, int participation, boolean isActive, Boolean isComplete, String name, Instant activatedOn) {
+    public OngoingQuest(int id, int userId, UUID questId, int participation, boolean isActive, Boolean isComplete, String name, Instant activatedOn, Instant expiresOn) {
         this.id = id;
         this.userId = userId;
         this.questId = questId;
@@ -24,6 +25,7 @@ public class OngoingQuest {
         this.isComplete = isComplete;
         this.name = name;
         this.activatedOn = activatedOn;
+        this.expiresOn = expiresOn;
     }
 
     public void SetIsComplete(Boolean isComplete) { this.isComplete = isComplete; }

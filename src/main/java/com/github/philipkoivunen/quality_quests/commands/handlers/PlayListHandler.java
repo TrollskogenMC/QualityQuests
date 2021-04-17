@@ -31,7 +31,7 @@ public class PlayListHandler implements IArgumentHandler {
 
     @Override
     public boolean test(Set<String> items, String argument) {
-        return items.contains(argument.toLowerCase());
+        return items.contains(argument);
     }
 
     @Override

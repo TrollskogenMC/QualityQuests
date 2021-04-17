@@ -21,6 +21,7 @@ import com.github.philipkoivunen.quality_quests.events.Events;
 import com.github.philipkoivunen.quality_quests.managers.OngoingQuestManager;
 import com.github.philipkoivunen.quality_quests.managers.QuestProgressionManager;
 import com.github.philipkoivunen.quality_quests.objects.OngoingQuests;
+import com.github.philipkoivunen.quality_quests.objects.Playlist;
 import com.github.philipkoivunen.quality_quests.objects.Playlists;
 import com.github.philipkoivunen.quality_quests.objects.Quests;
 import org.bukkit.Bukkit;
@@ -111,6 +112,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .add(MessageConstants.QUEST_PROGRESSED, "quest_progressed")
                 .add(MessageConstants.CREATE_PLAYLIST_SUCCESS, "create_playlist_success")
                 .add(MessageConstants.UPDATE_PLAYLIST_SUCCESS, "update_playlist_success")
+                .add(MessageConstants.ENDED_QUEST, "ended_quest")
                 .build();
 
         translations = new Translations(this, messageManager);
@@ -134,11 +136,11 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .requiresPermission("qquests.admin");
 
         this.commando
-                .addCommand("qquests list")
+                .addCommand("qquests quest list")
                 .withHandler(new QquestsList());
 
         this.commando
-                .addCommand("qquests setMob")
+                .addCommand("qquests quest setMob")
                 .withHandler(new QquestsSetMob(getInstance(), getQuests(), getStorageApi()))
                 .withArgument(
                         new CarbonArgument.Builder("questName")
@@ -153,7 +155,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .requiresPermission("qquests.admin");
 
         this.commando
-                .addCommand("qquests setBlock")
+                .addCommand("qquests quest setBlock")
                 .withHandler(new QquestsSetBlock(getInstance(), getQuests(), getStorageApi()))
                 .withArgument(
                         new CarbonArgument.Builder("questName")
@@ -168,7 +170,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .requiresPermission("qquests.admin");
 
         this.commando
-            .addCommand("qquests createQuest")
+            .addCommand("qquests quest create")
             .withHandler(new CreateQuest(this.storageApi, quests))
             .withArgument(
                     new CarbonArgument.Builder("name")
@@ -183,13 +185,13 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
             .withArgument(
                     new CarbonArgument.Builder("complete_participation")
-                            .setHandler(new QuestGoalCompleteParticipationHandler())
+                            .setHandler(new IntegerHandler())
                             .create()
             )
             .requiresPermission("qquests.admin");
 
         this.commando
-            .addCommand("qquests activate")
+            .addCommand("qquests quest activate")
             .withHandler(new QquestsActivate(this.ongoingQuestManager, this.getQuests(), this.getOngoingQuests()))
             .withArgument(
                     new CarbonArgument.Builder("questId")
@@ -206,7 +208,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
             .requiresPermission("qquests.admin");
 
         this.commando
-                .addCommand("qquests deactivate")
+                .addCommand("qquests quest deactivate")
                 .withHandler(new QquestsDeActivate(this.ongoingQuestManager, this.getQuests(), this.getOngoingQuests()))
                 .withArgument(
                         new CarbonArgument.Builder("questId")
@@ -261,14 +263,29 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .addCommand("qquests playlist set daysToComplete")
                 .withHandler(new PlaylistDaysSet(this.getStorageApi(), this.getPlayLists()))
                 .withArgument(
-                        new CarbonArgument.Builder("playListId")
-                                .setHandler(new PlaylistId())
+                        new CarbonArgument.Builder("playlistName")
+                                .setHandler(new PlayListHandler(this.getPlayLists()))
                                 .create()
                 )
                 .withArgument(
                         new CarbonArgument.Builder("daysToComplete")
-                                .setHandler(new DaysToCompleteHandler())
+                                .setHandler(new IntegerHandler())
                                 .create()
+                )
+                .requiresPermission("qquests.admin");
+
+        this.commando
+                .addCommand("qquests playlist set numToGenerate")
+                .withHandler(new PlaylistNumToGenerateSet(this.getStorageApi(), this.getPlayLists()))
+                .withArgument(
+                    new CarbonArgument.Builder("playlistName")
+                        .setHandler(new PlayListHandler(this.getPlayLists()))
+                        .create()
+                )
+                .withArgument(
+                    new CarbonArgument.Builder("numToGenerate")
+                        .setHandler(new IntegerHandler())
+                        .create()
                 )
                 .requiresPermission("qquests.admin");
     }

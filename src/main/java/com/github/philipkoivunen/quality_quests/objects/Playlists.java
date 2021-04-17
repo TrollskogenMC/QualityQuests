@@ -66,4 +66,15 @@ public class Playlists {
         }
         return playlist;
     }
+
+    public List<Playlist> getPlayListsCanBeActivated() {
+        List<Playlist> newPlayLists = new ArrayList<>();
+
+        for (Playlist playlist : this.playlists) {
+            if(playlist.amountToGenerate > 0) {
+                newPlayLists.add(playlist);
+            }
+        }
+        return newPlayLists;
+    }
 }

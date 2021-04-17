@@ -1,9 +1,11 @@
 package com.github.philipkoivunen.quality_quests.commands;
 
 import com.github.hornta.commando.ICommandHandler;
+import com.github.hornta.messenger.MessageManager;
 import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 import com.github.hornta.trollskogen_core.users.UserObject;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
+import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import com.github.philipkoivunen.quality_quests.managers.OngoingQuestManager;
 import com.github.philipkoivunen.quality_quests.objects.*;
 import org.bukkit.Bukkit;
@@ -11,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,10 +58,22 @@ public class QquestPlaylistActivateRandom implements ICommandHandler {
             }
         }
 
+        Instant todaysDate = Instant.now();
+        Instant expirationDate = playlist.daysToComplete != null ? todaysDate.plus(playlist.daysToComplete, ChronoUnit.DAYS) : null;
+
         if(foundOngoingQuest != null) {
             this.ongoingQuestManager.postOngoingQuest(user, foundOngoingQuest);
+            MessageManager.setValue("progress_current", foundOngoingQuest.participation);
         } else {
-            this.ongoingQuestManager.postOngoingQuest(user, new OngoingQuest(0, user.getId(), quest.questId, 0, true, false, quest.questName, Instant.now()));
+            this.ongoingQuestManager.postOngoingQuest(user, new OngoingQuest(0, user.getId(), quest.questId, 0, true, false, quest.questName, todaysDate, playlist.daysToComplete != null ? expirationDate : null));
+            MessageManager.setValue("progress_current", 0);
         }
+
+        MessageManager.setValue("quest_name", quest.questName);
+        MessageManager.setValue("progress_max", quest.minParticipation);
+        if(quest.goalType == "break_block") MessageManager.setValue("goal", quest.blockToDestroy);
+        else if(quest.goalType == "kill") MessageManager.setValue("goal", quest.mobToKill);
+
+        MessageManager.sendMessage(commandSender, MessageConstants.START_QUEST_SUCCESS);
     }
 }

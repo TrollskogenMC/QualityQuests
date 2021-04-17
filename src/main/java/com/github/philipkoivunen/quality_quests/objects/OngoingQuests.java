@@ -1,5 +1,6 @@
 package com.github.philipkoivunen.quality_quests.objects;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +14,7 @@ public class OngoingQuests {
 
     public void addOngoingQuest(OngoingQuest ongoingQuest) {
         Boolean hasFound = false;
+
         if(this.ongoingQuests.size() < 1) {
             this.ongoingQuests.add(ongoingQuest);
         } else {
@@ -79,6 +81,20 @@ public class OngoingQuests {
         return newOngoingQuestList;
     }
 
+    public List<OngoingQuest> getPlayersActiveExpiredQuests(int playerId) {
+        List<OngoingQuest> newOngoingQuestList = new ArrayList<>();
+        for(int i = 0; i < this.ongoingQuests.size(); i++) {
+            OngoingQuest o = this.ongoingQuests.get(i);
+            if(o.expiresOn != null) {
+                if (o.userId == playerId && o.isActive && o.expiresOn.isAfter(Instant.now())) {
+                    newOngoingQuestList.add(o);
+                }
+            }
+        }
+
+        return newOngoingQuestList;
+    }
+
     public List<OngoingQuest> getOngoingQuests() {
         return this.ongoingQuests;
     }
@@ -86,7 +102,6 @@ public class OngoingQuests {
     public void setList(List<OngoingQuest> data) {
         this.ongoingQuests = data;
     }
-
 
     public void deleteOngoingQuest(Integer id) {
         List<OngoingQuest> newOngoingQuestList = new ArrayList<>();
@@ -101,5 +116,4 @@ public class OngoingQuests {
     public void clear() {
         this.ongoingQuests.clear();
     }
-
 }

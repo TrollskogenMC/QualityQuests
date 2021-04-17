@@ -44,7 +44,7 @@ public class QquestsDeActivate implements ICommandHandler {
         if(foundOngoingQuest == null) {
             this.ongoingQuestManager.postOngoingQuest(user, foundOngoingQuest);
         } else {
-            this.ongoingQuestManager.postOngoingQuest(user, new OngoingQuest(0, user.getId(), quest.questId, 0, false, false, quest.questName, Instant.now()));
+            this.ongoingQuestManager.postOngoingQuest(user, new OngoingQuest(0, user.getId(), quest.questId, 0, false, false, quest.questName, Instant.now(), null));
         }
     }
 }

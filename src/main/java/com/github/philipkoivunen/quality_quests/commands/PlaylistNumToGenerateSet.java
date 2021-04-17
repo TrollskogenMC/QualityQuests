@@ -8,11 +8,11 @@ import com.github.philipkoivunen.quality_quests.objects.Playlist;
 import com.github.philipkoivunen.quality_quests.objects.Playlists;
 import org.bukkit.command.CommandSender;
 
-public class PlaylistDaysSet implements ICommandHandler {
-    private final Playlists playlists;
-    private final StorageApi storageApi;
+public class PlaylistNumToGenerateSet implements ICommandHandler {
+    private static StorageApi storageApi;
+    private static Playlists playlists;
 
-    public PlaylistDaysSet(StorageApi storageApi, Playlists playlists) {
+    public PlaylistNumToGenerateSet(StorageApi storageApi, Playlists playlists) {
         this.playlists = playlists;
         this.storageApi = storageApi;
     }
@@ -21,9 +21,9 @@ public class PlaylistDaysSet implements ICommandHandler {
     public void handle(CommandSender commandSender, String[] strings, int i) {
         Playlist playlist = this.playlists.getPlayListByName(strings[0]);
 
-        playlist.setDaysToComplete(Integer.parseInt(strings[1]));
+        playlist.setAmountToGenerate(Integer.parseInt(strings[1]));
         playlists.addPlayList(playlist);
         this.storageApi.updatePlaylist(playlist);
-        MessageManager.sendMessage(commandSender, MessageConstants.UPDATE_PLAYLIST_SUCCESS);
+        MessageManager.sendMessage(commandSender, MessageConstants.UPDATE_QUEST_SUCCESS);
     }
 }

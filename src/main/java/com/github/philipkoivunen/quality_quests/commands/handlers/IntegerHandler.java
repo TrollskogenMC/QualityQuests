@@ -7,18 +7,11 @@ import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 
 import java.util.Set;
 
-public class DaysToCompleteHandler implements IArgumentHandler {
-    public  DaysToCompleteHandler() {
-
-    }
-
+public class IntegerHandler implements IArgumentHandler {
     @Override
     public boolean test(Set<String> items, String argument) {
-        if(argument.length() > 0) {
-            if(Integer.parseInt(argument) > 0) {
-                return true;
-            }
-        }
+        int argumentInt = Integer.parseInt(argument);
+        if(argumentInt >= 1) return true;
         return false;
     }
 
