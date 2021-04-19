@@ -1,6 +1,5 @@
 package com.github.philipkoivunen.quality_quests.managers;
 
-import com.comphenix.protocol.PacketType;
 import com.github.hornta.messenger.MessageManager;
 import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 import com.github.hornta.trollskogen_core.users.UserObject;
@@ -37,10 +36,10 @@ public class QuestProgressionManager {
             Instant lastJoinDate = user.getLastJoinDate();
             Instant todaysDate = Instant.now();
             Instant todayZeroZero = todaysDate.truncatedTo(ChronoUnit.DAYS);
+            this.addNewQuests(user);
 
             if (lastJoinDate.isBefore(todayZeroZero)) {
                 List<Quest> foundQuests = qualityQuestsPlugin.getQuests().getQuestsByType(QuestTypeConstants.LOGIN.toString());
-                this.addNewQuests(user);
 
                 if(foundQuests.size() == 0) patchAndAddProgress(foundQuests, user);
             }
@@ -108,14 +107,17 @@ public class QuestProgressionManager {
         List<OngoingQuest> foundOngoingQuests = new ArrayList<>();
         if(foundQuests.size() > 0) {
             for(Quest q : foundQuests) {
-                List<OngoingQuest> activeQuests = this.ongoingQuests.getPlayersActiveOngoingQuestsByQuestId(user.getId(), q.questId);
+                List<OngoingQuest> activeQuests = this.ongoingQuests.getPlayersActiveNotCompleteOngoingQuestsByQuestId(user.getId(), q.questId);
                 if(activeQuests.size() > 0) {
                     for(OngoingQuest o : activeQuests) {
                         o.participation = o.participation + 1;
 
                         if(o.participation >= q.minParticipation && o.isActive && !o.isComplete) {
                             o.isComplete = true;
-                            o.isActive = false;
+
+                            // A quest that has not expired yet needs to be active
+                            if(o.expiresOn == null) o.isActive = false;
+                            else o.isActive = Instant.now().isBefore(o.expiresOn);
 
                             if(q.commands != null && q.commands.size() > 0) {
                                 for(String command : q.commands) {
@@ -125,7 +127,7 @@ public class QuestProgressionManager {
 
                             MessageManager.setValue("quest_name", q.questName);
                             MessageManager.sendMessage(user.getPlayer(), MessageConstants.QUEST_COMPLETED);
-                        } else {
+                        } else if(!o.isComplete){
                             Instant lastInteractedDate = o.lastInteractedWidth;
                             Instant todaysDate = Instant.now();
                             Instant threeMinutesAfterInteract = lastInteractedDate == null ? null : lastInteractedDate.plus(3, ChronoUnit.MINUTES);
@@ -141,7 +143,7 @@ public class QuestProgressionManager {
 
                         foundOngoingQuests.add(o);
 
-                        JsonObject json = generateOngoingQuestJson(o);
+                        JsonObject json = this.qualityQuestsPlugin.getOngoingQuestManager().generateOngoingQuestJson(o);
 
                         qualityQuestsPlugin.getServer().getScheduler().runTask(qualityQuestsPlugin, () -> qualityQuestsPlugin.getOngoingQuestManager().patchOngoingQuest(o, json));
                         this.ongoingQuests.deleteOngoingQuest(o.id);
@@ -151,20 +153,4 @@ public class QuestProgressionManager {
             }
         }
     }
-
-
-    private JsonObject generateOngoingQuestJson(OngoingQuest o) {
-        JsonObject json = new JsonObject();
-        json.addProperty("id", o.id);
-        json.addProperty("quest_id", o.questId.toString());
-        json.addProperty("user_id", o.userId);
-        json.addProperty("is_active", o.isActive);
-        json.addProperty("is_complete", o.isComplete);
-        json.addProperty("participation", o.participation);
-        json.addProperty("name", o.name);
-        json.addProperty("activated_on", Instant.now().toString());
-        json.addProperty("expires_on", o.expiresOn == null ? "null" : o.expiresOn.toString());
-        return json;
-    }
-
 }

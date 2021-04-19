@@ -5,6 +5,8 @@ import com.github.philipkoivunen.quality_quests.objects.Playlist;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,8 @@ public class YamlPlaylistToPlaylist {
     private static final String NUM_TO_GENERATE = "numToGenerate";
     private static final String ACTIVATE_ON_FIRST_LOGIN = "activateOnFirstLogin";
 
-    public static Playlist Convert(YamlConfiguration yamlData) {
+    @NotNull
+    public static Playlist Convert(@NotNull YamlConfiguration yamlData) {
         Playlist playlist = new Playlist();
 
         List<String> questIdsStringList= yamlData.getStringList(QUEST_IDS);

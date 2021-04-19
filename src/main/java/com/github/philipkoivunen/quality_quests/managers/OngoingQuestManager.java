@@ -114,8 +114,8 @@ public class OngoingQuestManager implements Listener {
                     for(OngoingQuest o: parsedOngoingQuests) {
                         ongoingQuests.addOngoingQuest(o);
 
-                        if(o.expiresOn != null && o.isActive && !o.isComplete) {
-                            this.scheduleRemoveExpiredOngoingQuest(o);
+                        if(o.expiresOn != null && o.isActive) {
+                            this.scheduleHandleExpiredOngoingQuest(o);
                         }
                     }
                     Bukkit.getLogger().info("Loaded " + parsedOngoingQuests.length+ " ongoingquests");
@@ -166,23 +166,46 @@ public class OngoingQuestManager implements Listener {
         });
     }
 
-    public void scheduleRemoveExpiredOngoingQuest(OngoingQuest ongoingQuest) {
+    public JsonObject generateOngoingQuestJson(OngoingQuest o) {
+        JsonObject json = new JsonObject();
+        json.addProperty("id", o.id);
+        json.addProperty("quest_id", o.questId.toString());
+        json.addProperty("user_id", o.userId);
+        json.addProperty("is_active", o.isActive);
+        json.addProperty("is_complete", o.isComplete);
+        json.addProperty("participation", o.participation);
+        json.addProperty("name", o.name);
+        json.addProperty("activated_on", Instant.now().toString());
+        json.addProperty("expires_on", o.expiresOn == null ? "null" : o.expiresOn.toString());
+        return json;
+    }
+
+    public void scheduleHandleExpiredOngoingQuest(OngoingQuest ongoingQuest) {
         Instant now = Instant.now();
         Instant expiryDate = ongoingQuest.expiresOn;
         Instant expiriesZeroZero = expiryDate.truncatedTo(ChronoUnit.DAYS);
 
         long duration = Duration.between(now, expiriesZeroZero).getSeconds() + 1;
 
-        if(duration <= 0) {
+        if(duration <= 0 ) {
             Player player = TrollskogenCorePlugin.getUser(ongoingQuest.userId).getPlayer();
 
-            this.ongoingQuests.deleteOngoingQuest(ongoingQuest.id);
-            this.deleteOngoingQuest(ongoingQuest);
+            if(ongoingQuest.isComplete) {
+                ongoingQuest.isActive = false;
+                this.ongoingQuests.addOngoingQuest(ongoingQuest);
+                JsonObject json = generateOngoingQuestJson(ongoingQuest);
+                this.patchOngoingQuest(ongoingQuest, json);
+            } else {
+                this.ongoingQuests.deleteOngoingQuest(ongoingQuest.id);
+                this.deleteOngoingQuest(ongoingQuest);
+            }
 
             if(player.isOnline()) {
-
                 MessageManager.setValue("quest_name", ongoingQuest.name);
                 MessageManager.sendMessage(player, MessageConstants.ENDED_QUEST);
+
+                // there is no need to generate new ongoingquests if the user wont login again
+                this.qualityQuestsPlugin.getQuestProgressionManager().addNewQuests(TrollskogenCorePlugin.getUser(ongoingQuest.userId));
             }
         }
 
@@ -193,9 +216,22 @@ public class OngoingQuestManager implements Listener {
 
             if(otherNow.isAfter(otherExpiriesZeroZero)) {
                 Bukkit.getScheduler().callSyncMethod(TrollskogenCorePlugin.getPlugin(), () -> {
-                    this.ongoingQuests.deleteOngoingQuest(ongoingQuest.id);
-                    this.deleteOngoingQuest(ongoingQuest);
-                    this.qualityQuestsPlugin.getQuestProgressionManager().addNewQuests(TrollskogenCorePlugin.getUser(ongoingQuest.userId));
+                    if(ongoingQuest.isComplete) {
+                        ongoingQuest.isActive = false;
+                        this.ongoingQuests.addOngoingQuest(ongoingQuest);
+                        JsonObject json = generateOngoingQuestJson(ongoingQuest);
+                        this.patchOngoingQuest(ongoingQuest, json);
+                    } else {
+                        this.ongoingQuests.deleteOngoingQuest(ongoingQuest.id);
+                        this.deleteOngoingQuest(ongoingQuest);
+                    }
+                    Player player = TrollskogenCorePlugin.getUser(ongoingQuest.userId).getPlayer();
+                    if(player.isOnline()) {
+                        MessageManager.setValue("quest_name", ongoingQuest.name);
+                        MessageManager.sendMessage(player, MessageConstants.ENDED_QUEST);
+                        // there is no need to generate new ongoingquests if the user wont login again
+                        this.qualityQuestsPlugin.getQuestProgressionManager().addNewQuests(TrollskogenCorePlugin.getUser(ongoingQuest.userId));
+                    }
                     return null;
                 });
             }

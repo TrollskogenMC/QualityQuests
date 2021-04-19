@@ -44,10 +44,10 @@ public class PlaylistFile {
             yaml.set(VERSION, playlist.versionNumber);
             yaml.set(ID, playlist.id.toString());
             yaml.set(PLAYLIST_NAME, playlist.playListName);
-            yaml.set(QUEST_IDS, questIds);
             yaml.set(DAYS_TO_COMPLETE, playlist.daysToComplete);
             yaml.set(NUM_TO_GENERATE, playlist.amountToGenerate);
             yaml.set(ACTIVATE_ON_FIRST_LOGIN, playlist.activateOnFirstLogin);
+            yaml.set(QUEST_IDS, questIds);
             try{
                 yaml.save(playListFile);
             }catch (IOException ex) {
@@ -92,7 +92,8 @@ public class PlaylistFile {
                         QualityQuestsPlugin.getInstance().getLogger().log(Level.SEVERE, ex.getMessage(), ex);
                         return false;
                     }
-                    playLists.add(YamlPlaylistToPlaylist.Convert(yaml));
+                    Playlist p = YamlPlaylistToPlaylist.Convert(yaml);
+                    playLists.add(p);
                 }
             }
             if(playLists.size() > 0) QualityQuestsPlugin.getInstance().getPlayLists().setList(playLists);
