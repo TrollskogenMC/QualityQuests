@@ -162,8 +162,12 @@
           <groupId>org.asynchttpclient</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>messenger</artifactId>
-          <groupId>se.hornta</groupId>
+          <artifactId>versioned-config</artifactId>
+          <groupId>com.github.hornta</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commando</artifactId>
+          <groupId>com.github.hornta</groupId>
         </exclusion>
         <exclusion>
           <artifactId>JDA</artifactId>

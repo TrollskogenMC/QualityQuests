@@ -1,6 +1,6 @@
 package com.github.philipkoivunen.quality_quests.commands;
 
-import com.github.hornta.commando.ICommandHandler;
+import se.hornta.commando.ICommandHandler;
 import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 import com.github.hornta.trollskogen_core.users.UserObject;
 import com.github.philipkoivunen.quality_quests.managers.OngoingQuestManager;

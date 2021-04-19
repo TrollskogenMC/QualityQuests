@@ -1,16 +1,12 @@
 package com.github.philipkoivunen.quality_quests;
 
-import com.github.hornta.commando.CarbonArgument;
-import com.github.hornta.commando.CarbonArgumentType;
-import com.github.hornta.commando.CarbonCommand;
-import com.github.hornta.commando.Commando;
-import com.github.hornta.messenger.MessageManager;
-import com.github.hornta.messenger.MessagesBuilder;
-import com.github.hornta.messenger.Translation;
-import com.github.hornta.messenger.Translations;
+import se.hornta.commando.CarbonArgument;
+import se.hornta.commando.CarbonArgumentType;
+import se.hornta.commando.CarbonCommand;
+import se.hornta.commando.Commando;
 import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 import com.github.hornta.trollskogen_core.events.PluginReadyEvent;
-import com.github.hornta.versioned_config.*;
+import se.hornta.versioned_config.*;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
 import com.github.philipkoivunen.quality_quests.apis.fileApi.FileApi;
 import com.github.philipkoivunen.quality_quests.commands.*;
@@ -21,7 +17,6 @@ import com.github.philipkoivunen.quality_quests.events.Events;
 import com.github.philipkoivunen.quality_quests.managers.OngoingQuestManager;
 import com.github.philipkoivunen.quality_quests.managers.QuestProgressionManager;
 import com.github.philipkoivunen.quality_quests.objects.OngoingQuests;
-import com.github.philipkoivunen.quality_quests.objects.Playlist;
 import com.github.philipkoivunen.quality_quests.objects.Playlists;
 import com.github.philipkoivunen.quality_quests.objects.Quests;
 import org.bukkit.Bukkit;
@@ -29,6 +24,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import se.hornta.messenger.*;
 
 import java.io.File;
 import java.util.List;
@@ -63,7 +59,11 @@ public class QualityQuestsPlugin extends JavaPlugin {
             setEnabled(false);
             return;
         }
-        setupMessages();
+        try {
+            setupMessages();
+        } catch (MessengerException e) {
+            e.printStackTrace();
+        }
         setupCommands();
 
 
@@ -91,7 +91,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
         this.questProgressionManager = new QuestProgressionManager(this);
     }
 
-    private void setupMessages() {
+    private void setupMessages() throws MessengerException {
         MessageManager messageManager = new MessagesBuilder()
                 .add(MessageConstants.NO_PERMISSION, "no_permission")
                 .add(MessageConstants.DEFAULT_ERROR, "default_error")
@@ -114,6 +114,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .add(MessageConstants.UPDATE_PLAYLIST_SUCCESS, "update_playlist_success")
                 .add(MessageConstants.ENDED_QUEST, "ended_quest")
                 .add(MessageConstants.NEW_QUESTS, "new_quests")
+                .add(MessageConstants.LIST_QUEST_EMPTY, "list_quest_empty")
                 .build();
 
         translations = new Translations(this, messageManager);
@@ -137,8 +138,9 @@ public class QualityQuestsPlugin extends JavaPlugin {
                 .requiresPermission("qquests.admin");
 
         this.commando
-                .addCommand("qquests quest list")
-                .withHandler(new QquestsList());
+                .addCommand("quests list")
+                .withHandler(new QquestsList())
+                .requiresPermission("qquests.player");
 
         this.commando
                 .addCommand("qquests quest setMob")

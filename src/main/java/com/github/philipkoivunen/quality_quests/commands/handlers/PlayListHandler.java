@@ -1,12 +1,12 @@
 package com.github.philipkoivunen.quality_quests.commands.handlers;
 
-import com.github.hornta.commando.ValidationResult;
-import com.github.hornta.commando.completers.IArgumentHandler;
-import com.github.hornta.messenger.MessageManager;
+import se.hornta.commando.ValidationResult;
+import se.hornta.commando.completers.IArgumentHandler;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import com.github.philipkoivunen.quality_quests.objects.Playlist;
 import com.github.philipkoivunen.quality_quests.objects.Playlists;
 import org.bukkit.command.CommandSender;
+import se.hornta.messenger.MessageManager;
 
 import java.util.LinkedHashSet;
 import java.util.Locale;

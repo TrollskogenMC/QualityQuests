@@ -1,6 +1,6 @@
 package com.github.philipkoivunen.quality_quests.commands;
 
-import com.github.hornta.commando.ICommandHandler;
+import se.hornta.commando.ICommandHandler;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
 import com.github.philipkoivunen.quality_quests.objects.Playlist;
 import com.github.philipkoivunen.quality_quests.objects.Playlists;

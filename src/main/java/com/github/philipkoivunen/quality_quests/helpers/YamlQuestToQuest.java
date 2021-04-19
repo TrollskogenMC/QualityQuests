@@ -4,7 +4,6 @@ import com.github.philipkoivunen.quality_quests.objects.Quest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.util.List;
 import java.util.UUID;
 
 public class YamlQuestToQuest {

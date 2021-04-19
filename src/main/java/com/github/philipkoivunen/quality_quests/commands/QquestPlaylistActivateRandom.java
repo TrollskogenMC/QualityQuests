@@ -1,7 +1,6 @@
 package com.github.philipkoivunen.quality_quests.commands;
 
-import com.github.hornta.commando.ICommandHandler;
-import com.github.hornta.messenger.MessageManager;
+import se.hornta.commando.ICommandHandler;
 import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 import com.github.hornta.trollskogen_core.users.UserObject;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
@@ -12,6 +11,7 @@ import com.github.philipkoivunen.quality_quests.objects.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import se.hornta.messenger.MessageManager;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

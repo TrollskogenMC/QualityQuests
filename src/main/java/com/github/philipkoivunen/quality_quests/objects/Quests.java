@@ -2,14 +2,11 @@ package com.github.philipkoivunen.quality_quests.objects;
 
 import com.github.philipkoivunen.quality_quests.constants.QuestTypeConstants;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 public class Quests {
     private List<Quest> quests;

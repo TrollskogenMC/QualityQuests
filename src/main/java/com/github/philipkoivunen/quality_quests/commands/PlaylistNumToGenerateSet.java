@@ -1,12 +1,12 @@
 package com.github.philipkoivunen.quality_quests.commands;
 
-import com.github.hornta.commando.ICommandHandler;
-import com.github.hornta.messenger.MessageManager;
+import se.hornta.commando.ICommandHandler;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import com.github.philipkoivunen.quality_quests.objects.Playlist;
 import com.github.philipkoivunen.quality_quests.objects.Playlists;
 import org.bukkit.command.CommandSender;
+import se.hornta.messenger.MessageManager;
 
 public class PlaylistNumToGenerateSet implements ICommandHandler {
     private static StorageApi storageApi;

@@ -1,13 +1,13 @@
 package com.github.philipkoivunen.quality_quests.commands;
 
-import com.github.hornta.commando.ICommandHandler;
-import com.github.hornta.messenger.MessageManager;
+import se.hornta.commando.ICommandHandler;
 import com.github.philipkoivunen.quality_quests.QualityQuestsPlugin;
 import com.github.philipkoivunen.quality_quests.apis.StorageApi;
 import com.github.philipkoivunen.quality_quests.constants.MessageConstants;
 import com.github.philipkoivunen.quality_quests.objects.Quest;
 import com.github.philipkoivunen.quality_quests.objects.Quests;
 import org.bukkit.command.CommandSender;
+import se.hornta.messenger.MessageManager;
 
 public class QquestsSetBlock implements ICommandHandler {
     private QualityQuestsPlugin pluginInstance;

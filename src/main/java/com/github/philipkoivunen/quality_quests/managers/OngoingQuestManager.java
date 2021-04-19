@@ -1,6 +1,5 @@
 package com.github.philipkoivunen.quality_quests.managers;
 
-import com.github.hornta.messenger.MessageManager;
 import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 import com.github.hornta.trollskogen_core.events.PluginReadyEvent;
 import com.github.hornta.trollskogen_core.users.UserObject;
@@ -21,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
+import se.hornta.messenger.MessageManager;
 
 import java.time.Duration;
 import java.time.Instant;

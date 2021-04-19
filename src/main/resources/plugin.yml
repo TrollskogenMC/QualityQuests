@@ -8,6 +8,7 @@ depend:
 api-version: 1.15
 commands:
   qquests:
+  quests:
 permissions:
   qualityquests.quest.quests:
     default: false
