@@ -121,7 +121,9 @@ public class QuestProgressionManager {
 
                             if(q.commands != null && q.commands.size() > 0) {
                                 for(String command : q.commands) {
-                                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
+                                    MessageManager.setValue("player", user.getName());
+                                    String formattedCommand = MessageManager.getInstance().transformPlaceholders(command);
+                                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), formattedCommand);
                                 }
                             }
 
