@@ -7,6 +7,7 @@ public enum MobConstants {
     BEE,
     Cat,
     DOLPHIN,
+    ENDERMAN,
     HORSE,
     SHEEP,
     SKELETON,
@@ -21,5 +22,11 @@ public enum MobConstants {
     BAT,
     VILLAGER,
     FOX,
-    GUARDIAN
+    GUARDIAN,
+    PIG,
+    SLIME,
+    SQUID,
+    WITCH,
+    WITHERSKELETON,
+    WITHER
 }
