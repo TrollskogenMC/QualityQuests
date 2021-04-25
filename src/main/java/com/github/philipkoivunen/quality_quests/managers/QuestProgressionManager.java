@@ -65,7 +65,7 @@ public class QuestProgressionManager {
 
             int numToGenerate = playlistNumToGenerate - amountOfFoundQuests;
             if (!hasGenerated && !hasAnyQuestFromPlayList && numToGenerate > 0) {
-                    generateQuest(numToGenerate, user, playlist);
+                generateQuest(numToGenerate, user, playlist);
                 hasGenerated = true;
             }
         }

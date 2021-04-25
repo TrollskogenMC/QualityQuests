@@ -182,7 +182,7 @@ public class OngoingQuestManager implements Listener {
     }
 
     public void scheduleHandleExpiredOngoingQuest(OngoingQuest ongoingQuest) {
-        Instant now = Instant.now().plus(2L, ChronoUnit.HOURS);
+        Instant now = Instant.now();
         Instant expiryDate = ongoingQuest.expiresOn;
         Instant expiriesZeroZero = expiryDate.truncatedTo(ChronoUnit.DAYS);
 
@@ -190,7 +190,6 @@ public class OngoingQuestManager implements Listener {
 
         if(duration <= 0 ) {
             Player player = TrollskogenCorePlugin.getUser(ongoingQuest.userId).getPlayer();
-            System.out.println("Duration: " + duration);
             if(ongoingQuest.isComplete) {
                 ongoingQuest.isActive = false;
                 JsonObject json = generateOngoingQuestJson(ongoingQuest);
@@ -208,7 +207,6 @@ public class OngoingQuestManager implements Listener {
         } else {
         scheduledToExpire.put(ongoingQuest.id, scheduledExecutor.schedule(() -> {
             Bukkit.getScheduler().callSyncMethod(TrollskogenCorePlugin.getPlugin(), () -> {
-                System.out.println("Expired: " + ongoingQuest.name);
                 if(ongoingQuest.isComplete) {
                     ongoingQuest.isActive = false;
                     this.ongoingQuests.addOngoingQuest(ongoingQuest);
