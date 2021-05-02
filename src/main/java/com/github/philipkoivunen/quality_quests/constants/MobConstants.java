@@ -3,6 +3,8 @@ package com.github.philipkoivunen.quality_quests.constants;
 public enum MobConstants {
     COW,
     CREEPER,
+    BLAZE,
+    CHICKEN,
     CAVE_SPIDER,
     BEE,
     Cat,
@@ -14,7 +16,12 @@ public enum MobConstants {
     RABBIT,
     PIGLIN,
     ZOGLIN,
+    HOGLIN,
     ZOMBIE,
+    PIGZOMBIE,
+    SNOWMAN,
+    HUSK,
+    ENDERMITE,
     SPIDER,
     PILLAGER,
     EVOKER,
@@ -28,5 +35,6 @@ public enum MobConstants {
     SQUID,
     WITCH,
     WITHERSKELETON,
-    WITHER
+    WITHER,
+    STRAY
 }

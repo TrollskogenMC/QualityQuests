@@ -105,6 +105,10 @@
       <id>dmulloy2-repo</id>
       <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
     </repository>
+    <repository>
+      <id>coreprotect-repo</id>
+      <url>http://maven.playpro.com/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -114,24 +118,8 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <artifactId>commons-lang</artifactId>
-          <groupId>commons-lang</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>gson</artifactId>
-          <groupId>com.google.code.gson</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>bungeecord-chat</artifactId>
           <groupId>net.md-5</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>snakeyaml</artifactId>
-          <groupId>org.yaml</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -172,10 +160,6 @@
         <exclusion>
           <artifactId>JDA</artifactId>
           <groupId>net.dv8tion</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>gson</artifactId>
-          <groupId>com.google.code.gson</groupId>
         </exclusion>
       </exclusions>
     </dependency>

@@ -1,5 +1,8 @@
 package com.github.philipkoivunen.quality_quests;
 
+import net.coreprotect.CoreProtect;
+import net.coreprotect.CoreProtectAPI;
+import org.bukkit.plugin.Plugin;
 import se.hornta.commando.CarbonArgument;
 import se.hornta.commando.CarbonArgumentType;
 import se.hornta.commando.CarbonCommand;
@@ -28,6 +31,7 @@ import se.hornta.messenger.*;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Level;
 
 public class QualityQuestsPlugin extends JavaPlugin {
     private static QualityQuestsPlugin instance;
@@ -41,6 +45,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
     private Playlists playLists;
     private Events events;
     private QuestProgressionManager questProgressionManager;
+    private CoreProtectAPI coreProtect;
 
     @Override
     public void onEnable() {
@@ -53,16 +58,17 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
         TrollskogenCorePlugin.getServerReady().waitFor(this);
         try {
-            setupConfig();
+            this.setupConfig();
         } catch (ConfigurationException e) {
             getLogger().severe("Failed to setup configuration: " + e.getMessage());
             setEnabled(false);
             return;
         }
         try {
-            setupMessages();
+            this.setupMessages();
         } catch (MessengerException e) {
-            e.printStackTrace();
+            getLogger().log(Level.SEVERE, "Failed to setup messages", e.getMessage());
+            return;
         }
         setupCommands();
 
@@ -74,7 +80,7 @@ public class QualityQuestsPlugin extends JavaPlugin {
 
         Bukkit.getPluginManager().callEvent(new PluginReadyEvent(this));
         getServer().getScheduler().runTask(this, () -> this.ongoingQuestManager.loadAllOngoingQuests());
-
+        this.coreProtect = initiateCoreprotect();
     }
 
     private void setupConfig() throws ConfigurationException {
@@ -92,34 +98,35 @@ public class QualityQuestsPlugin extends JavaPlugin {
     }
 
     private void setupMessages() throws MessengerException {
-        MessageManager messageManager = new MessagesBuilder()
-                .add(MessageConstants.NO_PERMISSION, "no_permission")
-                .add(MessageConstants.DEFAULT_ERROR, "default_error")
-                .add(MessageConstants.MISSING_ARGUMENT, "missing_argument")
-                .add(MessageConstants.CONFIGURATION_RELOAD_SUCCESS, "configuration_reload_success")
-                .add(MessageConstants.CONFIGURATION_RELOAD_FAILURE, "configuration_reload_failure")
-                .add(MessageConstants.CREATE_QUEST_SUCCESS, "create_quest_success")
-                .add(MessageConstants.LIST_QUESTS_TITLE, "list_quests_title")
-                .add(MessageConstants.LIST_QUEST_KILL, "list_quest_kill")
-                .add(MessageConstants.LIST_QUEST_BREAK, "list_quest_break")
-                .add(MessageConstants.LIST_QUEST_CUSTOM, "list_quest_custom")
-                .add(MessageConstants.CREATE_QUEST_FAILED_PARAM, "create_quest_failed_param")
-                .add(MessageConstants.UPDATE_QUEST_ERROR, "update_quest_error")
-                .add(MessageConstants.UPDATE_QUEST_SUCCESS, "update_quest_success")
-                .add(MessageConstants.START_QUEST_SUCCESS, "start_quest_success")
-                .add(MessageConstants.START_QUEST_FAILURE, "start_quest_failure")
-                .add(MessageConstants.QUEST_COMPLETED, "quest_completed")
-                .add(MessageConstants.QUEST_PROGRESSED, "quest_progressed")
-                .add(MessageConstants.CREATE_PLAYLIST_SUCCESS, "create_playlist_success")
-                .add(MessageConstants.UPDATE_PLAYLIST_SUCCESS, "update_playlist_success")
-                .add(MessageConstants.ENDED_QUEST, "ended_quest")
-                .add(MessageConstants.NEW_QUESTS, "new_quests")
-                .add(MessageConstants.LIST_QUEST_EMPTY, "list_quest_empty")
-                .build();
+        MessagesBuilder m = new MessagesBuilder();
+        m.add(MessageConstants.NO_PERMISSION, "no_permission");
+        m.add(MessageConstants.DEFAULT_ERROR, "default_error");
+        m.add(MessageConstants.MISSING_ARGUMENT, "missing_argument");
+        m.add(MessageConstants.CONFIGURATION_RELOAD_SUCCESS, "configuration_reload_success");
+        m.add(MessageConstants.CONFIGURATION_RELOAD_FAILURE, "configuration_reload_failure");
+        m.add(MessageConstants.CREATE_QUEST_SUCCESS, "create_quest_success");
+        m.add(MessageConstants.LIST_QUESTS_TITLE, "list_quests_title");
+        m.add(MessageConstants.LIST_QUEST_KILL, "list_quest_kill");
+        m.add(MessageConstants.LIST_QUEST_BREAK, "list_quest_break");
+        m.add(MessageConstants.LIST_QUEST_CUSTOM, "list_quest_custom");
+        m.add(MessageConstants.CREATE_QUEST_FAILED_PARAM, "create_quest_failed_param");
+        m.add(MessageConstants.UPDATE_QUEST_ERROR, "update_quest_error");
+        m.add(MessageConstants.UPDATE_QUEST_SUCCESS, "update_quest_success");
+        m.add(MessageConstants.START_QUEST_SUCCESS, "start_quest_success");
+        m.add(MessageConstants.START_QUEST_FAILURE, "start_quest_failure");
+        m.add(MessageConstants.QUEST_COMPLETED, "quest_completed");
+        m.add(MessageConstants.QUEST_PROGRESSED, "quest_progressed");
+        m.add(MessageConstants.CREATE_PLAYLIST_SUCCESS, "create_playlist_success");
+        m.add(MessageConstants.UPDATE_PLAYLIST_SUCCESS, "update_playlist_success");
+        m.add(MessageConstants.ENDED_QUEST, "ended_quest");
+        m.add(MessageConstants.NEW_QUESTS, "new_quests");
+        m.add(MessageConstants.LIST_QUEST_EMPTY, "list_quest_empty");
 
-        translations = new Translations(this, messageManager);
-        Translation translation = translations.createTranslation(configuration.get(ConfigConstants.LANGUAGE));
-        messageManager.setTranslation(translation);
+        MessageManager messageManager = m.build();
+        this.translations = new Translations(this, messageManager);
+        String language = this.configuration.get(ConfigConstants.LANGUAGE);
+        Translation translation = this.translations.createTranslation(language);
+        MessageManager.getInstance().setTranslation(translation);
     }
 
 
@@ -298,6 +305,28 @@ public class QualityQuestsPlugin extends JavaPlugin {
         return this.commando.handleCommand(sender, command, args);
     }
 
+    private CoreProtectAPI initiateCoreprotect() {
+        Plugin plugin = getServer().getPluginManager().getPlugin("CoreProtect");
+
+        // Check that CoreProtect is loaded
+        if (!(plugin instanceof CoreProtect)) {
+            return null;
+        }
+
+        // Check that the API is enabled
+        CoreProtectAPI CoreProtect = ((CoreProtect) plugin).getAPI();
+        if (!CoreProtect.isEnabled()) {
+            return null;
+        }
+
+        // Check that a compatible version of the API is loaded
+        if (CoreProtect.APIVersion() < 6) {
+            return null;
+        }
+
+        return CoreProtect;
+    }
+
     public static QualityQuestsPlugin getInstance() {
         return instance;
     }
@@ -315,4 +344,9 @@ public class QualityQuestsPlugin extends JavaPlugin {
     public QuestProgressionManager getQuestProgressionManager() { return this.questProgressionManager;}
     public OngoingQuestManager getOngoingQuestManager() { return this.ongoingQuestManager;}
     public Playlists getPlayLists() { return this.playLists;}
+    public CoreProtectAPI getCoreProtect() {
+        return this.coreProtect;
+    }
+
+
 }

@@ -64,8 +64,8 @@ public class QuestProgressionManager {
             }
 
             int numToGenerate = playlistNumToGenerate - amountOfFoundQuests;
-            if (!hasAnyQuestFromPlayList && numToGenerate > 0) {
-                generateQuest(numToGenerate, user, playlist);
+            if (!hasGenerated && !hasAnyQuestFromPlayList && numToGenerate > 0) {
+                    generateQuest(numToGenerate, user, playlist);
                 hasGenerated = true;
             }
         }
@@ -98,8 +98,22 @@ public class QuestProgressionManager {
         if(player.hasPermission("qquests.player")) {
             UserObject user = TrollskogenCorePlugin.getUser(player);
             List<Quest> foundQuests = qualityQuestsPlugin.getQuests().getQuestsByBlockToBreak(block.getType());
-            if (foundQuests.size() > 0)
-            patchAndAddProgress(foundQuests, user);
+            if (foundQuests.size() > 0) {
+                Bukkit.getScheduler().runTaskLater(TrollskogenCorePlugin.getPlugin(), new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(qualityQuestsPlugin.getCoreProtect() != null) {
+                            // We need to delay for one second due to coreprotect not including the last 1sec log
+                            Boolean lookup = qualityQuestsPlugin.getCoreProtect().hasPlaced(user.getName(), block, 1800, 0);
+
+                            if (!lookup) {
+                                patchAndAddProgress(foundQuests, user);
+                            }
+                        }
+                    }
+                }, 20L );
+            }
         }
     }
 

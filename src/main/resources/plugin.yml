@@ -5,6 +5,7 @@ description: A simple zero config quest plugin
 main: com.github.philipkoivunen.quality_quests.QualityQuestsPlugin
 depend:
   - trollskogen-core
+  - CoreProtect
 api-version: 1.15
 commands:
   qquests:
